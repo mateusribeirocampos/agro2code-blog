@@ -1,4 +1,5 @@
 ---
+
 export async function getStaticPaths() {
 	const paths = ['en', 'pt'].map((lang) => ({
 		params: { lang },
@@ -6,8 +7,8 @@ export async function getStaticPaths() {
 	return paths;
 }
 
-import Layout from '../layouts/BlogPost.astro';
-import Base from '../layouts/Base.astro';
+import Layout from '../../layouts/BlogPost.astro';
+import Base from '../../layouts/Base.astro';
 ---
 
 <Base title="About Me" description="Lorem ipsum dolor sit amet">

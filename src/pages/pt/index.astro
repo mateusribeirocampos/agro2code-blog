@@ -1,0 +1,54 @@
+---
+export async function getStaticPaths() {
+	const paths = ['en', 'pt'].map((lang) => ({
+		params: { lang },
+	}));
+	return paths;
+}
+
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
+import { getLangFromUrl } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>🧑‍🚀 Bem-vindo ao meu espaço digital!</h1>
+			<p>
+				Olá, sou Mateus Campos, entomologista e atualmente estudante de Ciência da Computação. Aqui compartilho minha jornada, projetos e pensamentos, desde a curiosidade científica e não científica, passando pelo mundo dos insetos até a curiosidade de criar soluções em <code>tecnologia da informação.</code>
+			</p>
+			<p>
+				Este template já vem com algumas integrações configuradas no seu arquivo
+				<code>astro.config.mjs</code>. Você pode personalizar sua configuração com
+				<a href="https://astro.build/integrations">Integrações Astro</a> para adicionar ferramentas como Tailwind, React ou Vue ao seu projeto.
+			</p>
+			<p>Aqui estão algumas ideias para começar a usar o template:</p>
+			<ul>
+				<li>Edite esta página em <code>src/pages/pt/index.astro</code></li>
+				<li>Edite os itens do cabeçalho em <code>src/components/Header.astro</code></li>
+				<li>Adicione seu nome ao rodapé em <code>src/components/Footer.astro</code></li>
+				<li>Veja os posts de exemplo em <code>src/content/blog/</code></li>
+				<li>Personalize o layout dos posts em <code>src/layouts/BlogPost.astro</code></li>
+			</ul>
+			<p>
+				Divirta-se! Se tiver dúvidas, <a href="https://docs.astro.build/">leia a documentação</a> ou <a href="https://astro.build/chat">entre no Discord</a> para perguntar.
+			</p>
+			<p>
+				Procurando um template de blog com mais personalidade? Veja o <a
+					href="https://github.com/Charca/astro-blog-template"
+					>astro-blog-template</a> do <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>

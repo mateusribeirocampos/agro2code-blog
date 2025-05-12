@@ -1,0 +1,52 @@
+---
+import { languages } from '../i18n/ui';
+const currentPath = Astro.url.pathname;
+const lang = currentPath.startsWith('/pt') ? 'pt' : 'en';
+
+function translatePath(path: string, code: string) {
+  if (code === 'pt') {
+    // Se quisermos ir para o PT:
+    // — Se já começa com '/pt', retornamos igual;
+    // — Caso contrário, adicionamos '/pt' antes do path, sem duplicar barras.
+    return path.startsWith('/pt') 
+    ? path 
+    : '/pt' + (path === '/' ? '' : path);
+  } else {
+    // Se quisermos ir para o EN:
+    // — Se começa com '/pt', removemos esse prefixo;
+    // — Caso contrário, mantemos o path original.
+    return path.startsWith('/pt') 
+    ? path.replace(/^\/pt/, '') || '/' 
+    : path;
+  }
+}
+
+---
+<ul>
+  {Object.entries(languages).map(([code, label])=>(
+    <li>
+      <a
+        href={translatePath(currentPath, code)}
+        aria-current={lang === code ? 'page' : undefined}
+      >
+        {label}
+      </a>
+    </li>
+  ))}
+</ul>
+<style>
+	ul {
+		gap: 1em;
+	}
+  a {
+    text-decoration: none;
+    color: var(--black);
+    font-size: 0.8em;
+  }
+  a:hover {
+    font-weight: bold;
+  }
+  ul{
+    list-style-type: none;
+  }
+</style>

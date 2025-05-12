@@ -1,21 +1,29 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
-	}));
+	const pages = await getCollection('blog');
+
+	const paths = pages.map((page) => {
+		const [lang, ...slug] = page.id.split('/');
+		return {
+			params: { lang, slug: slug.join('/') || undefined },
+			props: page,
+		};
+	});
+
+	return paths;
 }
-type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
-const { Content } = await render(post);
+// TODO: Add support for other languages
+const { lang, slug } = Astro.params;
+const page = Astro.props as CollectionEntry<'blog'>;
+const formattedDate = page.data.pubDate.toLocaleString(lang);
+const { Content } = await render(page);
+
 ---
-
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+// TODO: Add support for other languages
+<h1>{page.data.title}</h1>
+<p>by {page.data.author} • {formattedDate}</p>
+<Content/>

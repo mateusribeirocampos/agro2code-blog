@@ -5,15 +5,15 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://portfolio-mateusribeirocampos.vercel.app/en',
+  site: 'http://localhost:4321',
   integrations: [mdx(), sitemap({
     changefreq: 'daily',
     priority: 0.7,
     lastmod: new Date(),
-    customPages: ['/en/about'],
+    customPages: ['/about', '/pt/about'],
     entryLimit: 1000,
     i18n: {
-      defaultLocale: 'pt',
+      defaultLocale: 'en-US',
       locales: {
         pt: 'pt-BR',
         en: 'en-US',

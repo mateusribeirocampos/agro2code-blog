@@ -1,3 +1,14 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+
+const alerta = {
+  en: 'Alert',
+  pt: 'Alerta',
+}
+---
+
 <div style="padding: 1rem; background: #ffe0066; border-radius: 0.5rem; margin-bottom: 1rem;">
-  <strong>Alerta:</strong> <slot />
+  <strong>{alerta[lang]}:</strong> <slot />
 </div>

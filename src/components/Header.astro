@@ -1,15 +1,23 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import LanguagePicker from './languagePicker.astro';
+
+// TODO: Add support for other languages
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslations(lang);
+
 ---
 
 <header>
 	<nav>
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
+			<HeaderLink href={translatePath('/')}>{t('nav.home')}</HeaderLink>
+			<HeaderLink href={translatePath('/blog/')}>{t('nav.blog')}</HeaderLink>
+			<HeaderLink href={translatePath('/about/')}>{t('nav.about')}</HeaderLink>
 		</div>
 		<div class="social-links">
 			<a href="https://m.webtoo.ls/@astro" target="_blank">
@@ -39,6 +47,9 @@ import { SITE_TITLE } from '../consts';
 					></path></svg
 				>
 			</a>
+		</div>
+		<div class="language-selector text-sm">
+			<LanguagePicker />
 		</div>
 	</nav>
 </header>

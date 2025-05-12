@@ -3,3 +3,4 @@
 
 export const SITE_TITLE = 'Agro2Code';
 export const SITE_DESCRIPTION = 'Welcome to my website!';
+export const NAME_AUTHOR = 'Mateus Campos';
