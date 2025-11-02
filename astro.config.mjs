@@ -11,10 +11,13 @@ export default defineConfig({
     changefreq: 'daily',
     priority: 0.7,
     lastmod: new Date(),
-    customPages: ['/about', '/pt/about'],
+    customPages: [
+      'https://mateusribeirocampos.github.io/agro2code-blog/about',
+      'https://mateusribeirocampos.github.io/agro2code-blog/pt/about'
+    ],
     entryLimit: 1000,
     i18n: {
-      defaultLocale: 'en-US',
+      defaultLocale: 'en',
       locales: {
         pt: 'pt-BR',
         en: 'en-US',
