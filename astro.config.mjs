@@ -5,7 +5,8 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'http://localhost:4321',
+  site: 'https://mateusribeirocampos.github.io',
+  base: '/agro2code-blog',
   integrations: [mdx(), sitemap({
     changefreq: 'daily',
     priority: 0.7,
