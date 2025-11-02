@@ -1,19 +1,19 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
 import LanguagePicker from './languagePicker.astro';
 
 // TODO: Add support for other languages
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const translatePath = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
 
 ---
 
 <header>
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
+		<h2><a href={import.meta.env.BASE_URL}>{SITE_TITLE}</a></h2>
 		<div class="internal-links">
 			<HeaderLink href={translatePath('/')}>{t('nav.home')}</HeaderLink>
 			<HeaderLink href={translatePath('/blog/')}>{t('nav.blog')}</HeaderLink>

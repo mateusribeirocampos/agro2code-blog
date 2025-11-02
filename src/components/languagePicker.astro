@@ -1,24 +1,27 @@
 ---
 import { languages } from '../i18n/ui';
-const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
+const currentPath = Astro.url.pathname.replace(base, ''); // Remove base from current path
 const lang = currentPath.startsWith('/pt') ? 'pt' : 'en';
 
 function translatePath(path: string, code: string) {
+  let translatedPath;
   if (code === 'pt') {
     // Se quisermos ir para o PT:
     // — Se já começa com '/pt', retornamos igual;
     // — Caso contrário, adicionamos '/pt' antes do path, sem duplicar barras.
-    return path.startsWith('/pt') 
-    ? path 
+    translatedPath = path.startsWith('/pt')
+    ? path
     : '/pt' + (path === '/' ? '' : path);
   } else {
     // Se quisermos ir para o EN:
     // — Se começa com '/pt', removemos esse prefixo;
     // — Caso contrário, mantemos o path original.
-    return path.startsWith('/pt') 
-    ? path.replace(/^\/pt/, '') || '/' 
+    translatedPath = path.startsWith('/pt')
+    ? path.replace(/^\/pt/, '') || '/'
     : path;
   }
+  return `${base}${translatedPath}`;
 }
 
 ---

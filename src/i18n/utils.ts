@@ -10,12 +10,16 @@ export function useTranslations(lang: keyof typeof ui) {
 
 export function useTranslatedPath(lang: keyof typeof ui) {
   return function translatePath(path: string, l: string = lang) {
-    return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`;
+    const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
+    const translatedPath = !showDefaultLang && l === defaultLang ? path : `/${l}${path}`;
+    return `${base}${translatedPath}`;
   }
 }
 
 export function getLangFromUrl(url: URL) {
-  const [, lang] = url.pathname.split('/');
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const pathname = url.pathname.replace(base, ''); // Remove base from pathname
+  const [, lang] = pathname.split('/');
   if (lang in ui) return lang as keyof typeof ui;
   return defaultLang;
 }
