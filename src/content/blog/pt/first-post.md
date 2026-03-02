@@ -1,17 +1,54 @@
 ---
-title: 'First post'
-description: 'Lorem ipsum dolor sit amet'
-author: 'Campos'
-pubDate: 'Jul 08 2022'
-heroImage: '/agro2code-blog/blog-placeholder-3.jpg'
+title: 'AgroAPI da Embrapa: tecnologia para impulsionar o agronegócio'
+description: 'Conheça o Portal AgroAPI da Embrapa: o que é, para que serve e como pode transformar a agricultura brasileira.'
+author: 'Mateus Campos'
+pubDate: 'Mar 02 2026'
+heroImage: '/agro2code-blog/public/EmbrapaApi.png'
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
+As **APIs (Application Programming Interfaces)** são interfaces de programação que permitem a comunicação entre diferentes sistemas de software de forma automatizada, ágil e segura. No contexto da agricultura digital, elas possibilitam que dados e modelos científicos sejam usados diretamente em aplicações, softwares de gestão, sistemas web ou aplicativos móveis, sem que o usuário precise conhecer detalhes técnicos complexos — basta integrar os serviços por meio de chamadas de API.
 
-Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc. Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra massa massa ultricies mi.
+A **plataforma AgroAPI**, desenvolvida pela Embrapa Agricultura Digital, é um ambiente que reúne diversas APIs públicas com informações e modelos agropecuários gerados por pesquisas da Embrapa e parceiros. O objetivo é apoiar a transformação digital no campo, facilitando a criação de soluções tecnológicas que ajudam produtores rurais, técnicos, startups e empresas a tomarem decisões mais rápidas e embasadas cientificamente.
 
-Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
+## 🌱 O que é o serviço AgroAPI da Embrapa
 
-Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id cursus metus aliquam eleifend mi.
+A AgroAPI é uma plataforma de APIs voltada para o mercado de tecnologias em agricultura digital. Ela disponibiliza dados e modelos agropecuários confiáveis por meio de APIs, que podem ser integradas em sistemas de terceiros para gerenciar informações em tempo real e apoiar a tomada de decisões no campo. Essas APIs permitem que soluções de software aproveitem conhecimento técnico produzido pela Embrapa sem a necessidade de coleta ou tratamento manual de dados.
 
-Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
+## 🔍 APIs públicas disponíveis e suas funções
+
+Abaixo estão algumas das APIs que constam no catálogo da plataforma **AgroAPI** (a lista completa encontra-se no portal oficial):
+
+### 🌾 **Agritec**  
+Fornece informações úteis para o gerenciamento da produção agrícola, incluindo épocas ideais de plantio para diferentes culturas, indicação de cultivares recomendadas, recomendações de adubação e correção de solo, e previsão de produtividade.
+
+### ☀️ **ClimAPI**  
+Oferece previsões e variáveis climáticas relevantes para planejamento agrícola, apoiando o manejo de culturas com dados meteorológicos e modelos de risco climático.
+
+### 🔍 **SATVeg**  
+Disponibiliza séries temporais de índices vegetativos extraídos por sensores remotos, que podem ser usados em sistemas de monitoramento de safras ou análises de vegetação.
+
+### 📊 **Agrofit**  
+Provê dados sobre agroquímicos registrados no Brasil, incluindo substâncias ativas e produtos utilizados no manejo de pragas e doenças nas culturas (útil para sistemas de recomendação e conformidade técnica).
+
+### 🧠 **AgroTermos**  
+API para consulta de vocabulários técnicos e científicos relacionados ao setor agropecuário, com suporte a sinônimos, contextos de uso e traduções, facilitando integração semântica de termos agrícolas.
+
+### 🧪 **Bioinsumos**  
+Oferece informações específicas sobre bioinsumos agrícolas, materiais biológicos utilizados como alternativas sustentáveis aos insumos químicos tradicionais.
+
+### 🧬 **BlueStar Sting**  
+Uma API orientada ao uso de dados estruturais e físico-químicos (ex.: dados de proteínas do Protein Data Bank) que podem apoiar pesquisas avançadas ou integração com sistemas científicos.
+
+### 📚 **Responde Agro!**  
+Permite consultas a conteúdos de referência (como textos, livros e respostas técnicas) sobre temas agrícolas, útil para aplicação educacional ou de suporte técnico.
+
+### 🧪 **SmartSolos** e **PlantAnnot**  
+APIs especializadas para análise de solos e anotação de plantas, respectivamente, que apoiam sistemas de classificação de solo e modelos de identificação botânica.
+
+## 🚜 Conclusão: impacto para técnicos e agricultores
+
+A disponibilidade dessas APIs públicas pela Embrapa representa um passo importante para a **digitalização da agricultura brasileira**. Elas reduzem barreiras técnicas e custos ao integrar dados científicos confiáveis diretamente em soluções tecnológicas, como sistemas de gestão agrícola, aplicativos de suporte à decisão, startups AgTech ou produtos digitais inovadores.
+
+Ao utilizar essas APIs, técnicos e agricultores podem acessar informações atualizadas sem depender de processos manuais, melhorando o planejamento de safra, o monitoramento climático, a recomendação de insumos e até a conformidade regulatória. Isso contribui para uma agricultura mais eficiente, sustentável e competitiva — elevando a produtividade das áreas agrícolas e fortalecendo a produção brasileira.
+
+---
