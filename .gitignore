@@ -145,3 +145,48 @@ dist
 
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
+# ==============================================================================
+# OBSIDIAN VAULT - Configuração Customizada
+# ==============================================================================
+
+# Ignorar rascunhos (privados, não versionados)
+obsidian-vault/Rascunhos/
+
+# Ignorar posts publicados (já estão em src/content/blog/)
+obsidian-vault/Publicados/
+
+# Ignorar assets temporários (imagens devem ir para public/)
+obsidian-vault/Assets/
+
+# Configurações locais do Obsidian (workspace, cache)
+obsidian-vault/.obsidian/workspace*
+obsidian-vault/.obsidian/workspace.json
+obsidian-vault/.obsidian/workspace-mobile.json
+obsidian-vault/.obsidian/cache/
+obsidian-vault/.obsidian/plugins/*/data.json
+
+# Ignorar documentação explicativa pessoal (uso local)
+obsidian-vault/TROUBLESHOOTING.md
+obsidian-vault/EXPLICACAO-ERROS-BASE-PATH.md
+obsidian-vault/GITIGNORE-EXPLICADO.md
+
+# IMPORTANTE: O que SIM deve ser versionado
+# ✅ obsidian-vault/Templates/           → Versionado (importante!)
+# ✅ obsidian-vault/.obsidian/           → Parcialmente versionado (config base)
+
+# ==============================================================================
+# SCRIPTS - Todos versionados (importantes!)
+# ==============================================================================
+# ✅ scripts/ completo será versionado
+
+# ==============================================================================
+# macOS
+# ==============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ==============================================================================
+# Astro Build
+# ==============================================================================
+.astro/
