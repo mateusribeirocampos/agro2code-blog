@@ -3,6 +3,13 @@ title: 'Second post'
 description: 'Lorem ipsum dolor sit amet'
 author: 'Mateus'
 pubDate: 'Jul 15 2022'
+draft: true
+lang: 'en'
+category: 'notes'
+tags:
+  - 'draft'
+  - 'sample'
+canonicalSlug: 'second-post'
 heroImage: '/agro2code-blog/blog-placeholder-4.jpg'
 ---
 

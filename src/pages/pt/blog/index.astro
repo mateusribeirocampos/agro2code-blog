@@ -6,14 +6,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../../../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../../components/FormattedDate.astro';
 import { useTranslatedPath } from '../../../i18n/utils';
+import { listPostsForLanguage } from '../../../utils/blog';
 
 const lang = 'pt';
 const translatePath = useTranslatedPath('pt');
-
-const posts = (await getCollection('blog'))
-  .filter((post) => post.id.startsWith('pt/'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .map((post) => ({ ...post, slug: post.id.replace('pt/', '') }));
+const posts = listPostsForLanguage(await getCollection('blog'), lang);
 ---
 
 <!doctype html>

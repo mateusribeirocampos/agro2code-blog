@@ -5,9 +5,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "prebuild": "node ./scripts/ensure-astro-cache.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "node ./scripts/ensure-astro-cache.mjs && astro check",
+    "test": "node --test tests/*.test.mjs",
+    "ci": "npm run test && npm run check && npm run build",
     "astro": "astro"
   },
   "dependencies": {
@@ -15,5 +19,9 @@
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.5.0",
     "astro": "^5.13.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "typescript": "^5.9.3"
   }
 }

@@ -3,7 +3,17 @@ title: 'AgroAPI da Embrapa: tecnologia para impulsionar o agronegócio'
 description: 'Conheça o Portal AgroAPI da Embrapa: o que é, para que serve e como pode transformar a agricultura brasileira.'
 author: 'Mateus Campos'
 pubDate: 'Mar 02 2026'
-heroImage: '/agro2code-blog/public/EmbrapaApi.png'
+draft: false
+lang: 'pt'
+category: 'agricultura-digital'
+tags:
+  - 'api'
+  - 'embrapa'
+  - 'agro'
+canonicalSlug: 'agroapi-da-embrapa-tecnologia-para-impulsionar-o-agronegocio'
+portfolioFeatured: true
+portfolioSummary: 'Apresenta a AgroAPI da Embrapa e o potencial dela para produtos digitais no agro.'
+heroImage: '/agro2code-blog/EmbrapaApi.png'
 ---
 
 As **APIs (Application Programming Interfaces)** são interfaces de programação que permitem a comunicação entre diferentes sistemas de software de forma automatizada, ágil e segura. No contexto da agricultura digital, elas possibilitam que dados e modelos científicos sejam usados diretamente em aplicações, softwares de gestão, sistemas web ou aplicativos móveis, sem que o usuário precise conhecer detalhes técnicos complexos — basta integrar os serviços por meio de chamadas de API.

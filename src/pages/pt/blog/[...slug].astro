@@ -1,21 +1,10 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../../layouts/BlogPost.astro';
+import { listStaticPathsForLanguage } from '../../../utils/blog';
 
 export async function getStaticPaths() {
-	const pages = await getCollection('blog');
-
-	const paths = pages
-		.filter((page) => page.id.startsWith('pt/'))
-		.map((page) => {
-			const slug = page.id.replace('pt/', '');
-			return {
-				params: { slug },
-				props: page,
-			};
-		});
-
-	return paths;
+	return listStaticPathsForLanguage(await getCollection('blog'), 'pt');
 }
 
 const page = Astro.props as CollectionEntry<'blog'>;

@@ -3,7 +3,17 @@ title: 'Embrapa AgroAPI: technology to boost agribusiness'
 description: 'Learn what Embrapa AgroAPI is, why it exists, which public APIs are available, and how they can improve agricultural productivity.'
 author: 'Campos'
 pubDate: 'Mar 02 2026'
-heroImage: '/agro2code-blog/public/EmbrapaApi.png'
+draft: false
+lang: 'en'
+category: 'agriculture-technology'
+tags:
+  - 'api'
+  - 'embrapa'
+  - 'digital-agriculture'
+canonicalSlug: 'embrapa-agroapi-technology-to-boost-agribusiness'
+portfolioFeatured: true
+portfolioSummary: 'Overview of Embrapa AgroAPI and how it supports digital agriculture solutions.'
+heroImage: '/agro2code-blog/EmbrapaApi.png'
 ---
 
 **APIs (Application Programming Interfaces)** are software interfaces that allow different systems to communicate in an automated, fast, and secure way. In the context of digital agriculture, APIs make it possible to use scientific data and models directly within applications, management systems, web platforms, or mobile apps—without requiring users to understand complex technical details. Integration happens through simple API requests.

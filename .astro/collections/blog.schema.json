@@ -5,13 +5,16 @@
       "type": "object",
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "author": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "pubDate": {
           "anyOf": [
@@ -45,10 +48,42 @@
             }
           ]
         },
+        "draft": {
+          "type": "boolean"
+        },
+        "lang": {
+          "type": "string",
+          "enum": [
+            "en",
+            "pt"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
         "heroImage": {
           "type": "string"
         },
-        "$schema": {
+        "series": {
+          "type": "string"
+        },
+        "canonicalSlug": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "portfolioFeatured": {
+          "type": "boolean"
+        },
+        "portfolioSummary": {
           "type": "string"
         }
       },
@@ -56,7 +91,12 @@
         "title",
         "description",
         "author",
-        "pubDate"
+        "pubDate",
+        "draft",
+        "lang",
+        "category",
+        "tags",
+        "canonicalSlug"
       ],
       "additionalProperties": false
     }

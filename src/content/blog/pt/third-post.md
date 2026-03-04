@@ -3,6 +3,13 @@ title: 'Third post'
 description: 'Lorem ipsum dolor sit amet'
 author: 'Campos'
 pubDate: 'Jul 22 2022'
+draft: false
+lang: 'pt'
+category: 'ideias'
+tags:
+  - 'exemplo'
+  - 'ideias'
+canonicalSlug: 'third-post'
 heroImage: '/agro2code-blog/blog-placeholder-2.jpg'
 ---
 

@@ -1,68 +1,76 @@
-# Astro Starter Kit: Blog
+# Agro2Code Blog
 
-```sh
-npm create astro@latest -- --template blog
-```
+`agro2code-blog` is the editorial extension of the Agro2Code portfolio. The portfolio surfaces featured topics and directs readers here for the full article, discussion, or technical note.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+## Current architecture
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- Static site built with Astro
+- Content stored in `src/content/blog`
+- Priority editorial language: `pt`
+- Secondary language support: `en`
+- Deployment target: GitHub Pages
+- Authoring flow: external Obsidian vault configured through `OBSIDIAN_VAULT_PATH`
 
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
+## Content contract
 
-Features:
+Every post in `src/content/blog/{lang}` must include:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+- `title`
+- `description`
+- `author`
+- `pubDate`
+- `draft`
+- `lang`
+- `category`
+- `tags`
+- `canonicalSlug`
 
-## 🚀 Project Structure
+Optional fields:
 
-Inside of your Astro project, you'll see the following folders and files:
+- `updatedDate`
+- `heroImage`
+- `series`
+- `portfolioFeatured`
+- `portfolioSummary`
 
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
-```
+If `portfolioFeatured` is `true`, `portfolioSummary` is required.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Obsidian publishing flow
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+The repository assumes a local external Obsidian vault.
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+1. Configure `.env` from `.env.example`.
+2. Set `OBSIDIAN_VAULT_PATH` to your local vault path, for example `/path/to/obsidian-vault`.
+3. Create `Rascunhos/` and `Publicados/` inside the vault.
+4. Place a valid Markdown or MDX file inside `Rascunhos/`.
+5. Run `./scripts/publish-post.sh <arquivo.md> [pt|en]`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+The script validates the frontmatter contract, blocks duplicate `canonicalSlug` values in the same language, imports the file into `src/content/blog/{lang}`, and archives the source note into `Publicados/`.
 
-## 🧞 Commands
+## Quality gates
 
-All commands are run from the root of the project, from a terminal:
+- `npm run test`
+- `npm run check`
+- `npm run build`
+- `npm run ci`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+These commands are designed to keep the project aligned with a TDD-first workflow.
 
-## 👀 Want to learn more?
+## GitHub CI/CD and branch flow
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+The repository is structured for a pragmatic GitFlow:
 
-## Credit
+- `feature/*` branches for isolated work
+- `develop` as the integration branch
+- `main` as the release branch
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+GitHub Actions:
+
+- `.github/workflows/ci.yml` validates pull requests into `develop` and `main`, plus direct pushes to `develop`
+- `.github/workflows/deploy.yml` deploys GitHub Pages only from `main`
+
+To use this flow fully, the remote repository should keep a `develop` branch in addition to `main`.
+
+## Project documentation
+
+Architecture decisions and implementation guidance are documented in `ADRs-suggestions-a2c-b/`.

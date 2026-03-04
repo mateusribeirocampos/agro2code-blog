@@ -3,6 +3,14 @@ title: 'Teste de Integração Obsidian + Astro'
 description: 'Primeiro post criado no Obsidian e publicado no Astro Blog'
 author: 'Campos'
 pubDate: 'Dec 07 2025'
+draft: false
+lang: 'pt'
+category: 'workflow'
+tags:
+  - 'obsidian'
+  - 'astro'
+  - 'integracao'
+canonicalSlug: 'teste-de-integracao-obsidian-astro'
 heroImage: '/agro2code-blog/blog-placeholder-3.jpg'
 ---
 

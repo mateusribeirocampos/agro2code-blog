@@ -5,7 +5,7 @@ const currentPath = Astro.url.pathname.replace(base, ''); // Remove base from cu
 const lang = currentPath.startsWith('/pt') ? 'pt' : 'en';
 
 function translatePath(path: string, code: string) {
-  let translatedPath;
+  let translatedPath: string;
   if (code === 'pt') {
     // Se quisermos ir para o PT:
     // — Se já começa com '/pt', retornamos igual;
