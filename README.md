@@ -45,7 +45,7 @@ The repository assumes a local external Obsidian vault.
 4. Place a valid Markdown or MDX file inside `Rascunhos/`.
 5. Run `./scripts/publish-post.sh <arquivo.md> [pt|en]`.
 
-The script validates the frontmatter contract, blocks duplicate `canonicalSlug` values in the same language, imports the file into `src/content/blog/{lang}`, and archives the source note into `Publicados/`.
+The script automatically reads `.env` when available, validates the frontmatter contract, blocks duplicate `canonicalSlug` values in the same language, rejects files that are not `.md` or `.mdx`, rejects posts still marked with `draft: true`, imports the file into `src/content/blog/{lang}`, and archives the source note into `Publicados/`.
 
 ## Quality gates
 
