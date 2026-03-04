@@ -6,6 +6,7 @@ import path from 'node:path';
 
 import {
   extractFrontmatter,
+  initializePostTemplate,
   publishPost,
   resolveVaultPaths,
   validateLanguage,
@@ -75,4 +76,34 @@ Conteudo de teste.
 
   assert.equal(imported, archived);
   assert.equal(frontmatter.canonicalSlug, "'publicacao-de-teste'");
+});
+
+test('initializePostTemplate creates a PT template in the external vault', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  await mkdir(vault, { recursive: true });
+
+  const result = await initializePostTemplate('pt', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
+
+  assert.match(result.templatePath, /Templates\/Blog-Post-Template-pt\.md$/);
+  assert.match(templateContents, /title: 'Titulo do post'/);
+  assert.match(templateContents, /lang: 'pt'/);
+  assert.match(templateContents, /portfolioFeatured: false/);
+  assert.match(templateContents, /## Resumo/);
+});
+
+test('initializePostTemplate creates an EN template in the external vault', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  await mkdir(vault, { recursive: true });
+
+  const result = await initializePostTemplate('en', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
+
+  assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
+  assert.match(templateContents, /title: 'Post title'/);
+  assert.match(templateContents, /lang: 'en'/);
+  assert.match(templateContents, /portfolioFeatured: false/);
+  assert.match(templateContents, /## Summary/);
 });
