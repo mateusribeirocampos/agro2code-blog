@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, rename, readdir, stat } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, rename, readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const REQUIRED_FRONTMATTER_FIELDS = [
@@ -85,6 +85,89 @@ export async function ensureVaultStructure(paths) {
   await mkdir(paths.archiveDir, { recursive: true });
 }
 
+export function buildTemplateContent(language) {
+  const normalizedLanguage = validateLanguage(language);
+
+  if (normalizedLanguage === 'pt') {
+    return `---
+title: 'Titulo do post'
+description: 'Resumo objetivo do conteudo'
+author: 'Mateus Campos'
+pubDate: 'Mar 04 2026'
+draft: true
+lang: 'pt'
+category: 'categoria-principal'
+tags:
+  - 'tag-1'
+  - 'tag-2'
+canonicalSlug: 'titulo-do-post'
+portfolioFeatured: false
+portfolioSummary: 'Resumo curto para destaque no portfolio'
+heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
+---
+
+## Resumo
+
+Descreva rapidamente o objetivo do post.
+
+## Desenvolvimento
+
+Escreva o conteudo principal aqui.
+
+## Conclusao
+
+Registre a sintese final e os proximos passos.
+`;
+  }
+
+  return `---
+title: 'Post title'
+description: 'Short summary of the content'
+author: 'Mateus Campos'
+pubDate: 'Mar 04 2026'
+draft: true
+lang: 'en'
+category: 'main-category'
+tags:
+  - 'tag-1'
+  - 'tag-2'
+canonicalSlug: 'post-title'
+portfolioFeatured: false
+portfolioSummary: 'Short summary for portfolio highlights'
+heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
+---
+
+## Summary
+
+Describe the purpose of the post.
+
+## Development
+
+Write the main content here.
+
+## Conclusion
+
+Capture the main outcome and next steps.
+`;
+}
+
+export async function initializePostTemplate(language = 'pt', env = process.env) {
+  const selectedLanguage = validateLanguage(language);
+  const vaultPaths = await resolveVaultPaths(env);
+  await ensureVaultStructure(vaultPaths);
+
+  const templatesDir = path.join(vaultPaths.vaultPath, 'Templates');
+  await mkdir(templatesDir, { recursive: true });
+
+  const templatePath = path.join(templatesDir, `Blog-Post-Template-${selectedLanguage}.md`);
+  await writeFile(templatePath, buildTemplateContent(selectedLanguage), 'utf8');
+
+  return {
+    language: selectedLanguage,
+    templatePath,
+  };
+}
+
 export function validatePostFrontmatter(frontmatter, selectedLanguage) {
   for (const field of REQUIRED_FRONTMATTER_FIELDS) {
     if (!(field in frontmatter)) {
@@ -168,10 +251,17 @@ export async function publishPost(postFile, language = 'pt', env = process.env) 
 }
 
 async function runCli() {
-  const [postFile, language = 'pt'] = process.argv.slice(2);
+  const [commandOrPostFile, language = 'pt'] = process.argv.slice(2);
 
   try {
-    const result = await publishPost(postFile, language);
+    if (commandOrPostFile === '--init-template') {
+      const result = await initializePostTemplate(language);
+
+      console.log(`Template created at ${result.templatePath}`);
+      return;
+    }
+
+    const result = await publishPost(commandOrPostFile, language);
 
     console.log(`Published ${result.destination}`);
     console.log(`Archived source at ${result.archiveFile}`);
