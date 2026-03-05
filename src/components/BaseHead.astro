@@ -53,3 +53,16 @@ const { title, description, image = '/agro2code-blog/blog-placeholder-1.jpg' } =
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<script is:inline>
+	(() => {
+		try {
+			const storedTheme = localStorage.getItem('a2c-theme');
+			const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			const activeTheme = storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : systemTheme;
+			document.documentElement.dataset.theme = activeTheme;
+		} catch {
+			document.documentElement.dataset.theme = 'light';
+		}
+	})();
+</script>
