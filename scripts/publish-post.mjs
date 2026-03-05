@@ -15,6 +15,47 @@ const REQUIRED_FRONTMATTER_FIELDS = [
 
 const SUPPORTED_LANGUAGES = ['en', 'pt'];
 
+export async function loadEnvFile(envFilePath = '.env') {
+  try {
+    const rawContents = await readFile(envFilePath, 'utf8');
+    const values = {};
+
+    for (const line of rawContents.split('\n')) {
+      const trimmed = line.trim();
+
+      if (!trimmed || trimmed.startsWith('#')) {
+        continue;
+      }
+
+      const separatorIndex = trimmed.indexOf('=');
+      if (separatorIndex === -1) {
+        continue;
+      }
+
+      const key = trimmed.slice(0, separatorIndex).trim();
+      const value = trimmed.slice(separatorIndex + 1).trim();
+      values[key] = value;
+    }
+
+    return values;
+  } catch (error) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
+      return {};
+    }
+
+    throw error;
+  }
+}
+
+export async function resolveRuntimeEnv(env = process.env, envFilePath = '.env') {
+  const fileEnv = await loadEnvFile(envFilePath);
+
+  return {
+    ...fileEnv,
+    ...env,
+  };
+}
+
 export function extractFrontmatter(rawContent) {
   const match = rawContent.match(/^---\n([\s\S]*?)\n---/);
 
@@ -191,6 +232,11 @@ export function validatePostFrontmatter(frontmatter, selectedLanguage) {
   const fileLanguage = normalizeFrontmatterValue(frontmatter.lang);
   validateLanguage(fileLanguage);
 
+  const draftValue = normalizeFrontmatterValue(frontmatter.draft).toLowerCase();
+  if (draftValue === 'true') {
+    throw new Error('Draft posts cannot be published. Set draft: false before publishing.');
+  }
+
   if (fileLanguage !== selectedLanguage) {
     throw new Error(`Frontmatter lang "${fileLanguage}" does not match selected language "${selectedLanguage}".`);
   }
@@ -293,14 +339,8 @@ async function runCli() {
   const [commandOrPostFile, language = 'pt'] = process.argv.slice(2);
 
   try {
-    if (commandOrPostFile === '--init-template') {
-      const result = await initializePostTemplate(language);
-
-      console.log(`Template created at ${result.templatePath}`);
-      return;
-    }
-
-    const result = await publishPost(commandOrPostFile, language);
+    const runtimeEnv = await resolveRuntimeEnv();
+    const result = await publishPost(postFile, language, runtimeEnv);
 
     console.log(`Published ${result.destination}`);
     console.log(`Archived source at ${result.archiveFile}`);

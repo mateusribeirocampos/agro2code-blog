@@ -6,7 +6,7 @@ import path from 'node:path';
 
 import {
   extractFrontmatter,
-  initializePostTemplate,
+  loadEnvFile,
   publishPost,
   resolveVaultPaths,
   validateLanguage,
@@ -19,6 +19,18 @@ test('validateLanguage rejects unsupported values', () => {
 
 test('resolveVaultPaths requires OBSIDIAN_VAULT_PATH', async () => {
   await assert.rejects(() => resolveVaultPaths({}), /OBSIDIAN_VAULT_PATH is required/);
+});
+
+test('loadEnvFile reads key-value pairs from a local .env file', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-env-'));
+  const envFile = path.join(sandbox, '.env');
+
+  await writeFile(envFile, "OBSIDIAN_VAULT_PATH=/tmp/obsidian-vault\nA2C_CONTENT_ROOT=/tmp/content-root\n", 'utf8');
+
+  const loaded = await loadEnvFile(envFile);
+
+  assert.equal(loaded.OBSIDIAN_VAULT_PATH, '/tmp/obsidian-vault');
+  assert.equal(loaded.A2C_CONTENT_ROOT, '/tmp/content-root');
 });
 
 test('validatePostFrontmatter requires the full contract', () => {
@@ -201,8 +213,9 @@ test('initializePostTemplate creates a PT template in the external vault', async
   const vault = path.join(sandbox, 'obsidian-vault');
   await mkdir(vault, { recursive: true });
 
-  const result = await initializePostTemplate('pt', { OBSIDIAN_VAULT_PATH: vault });
-  const templateContents = await readFile(result.templatePath, 'utf8');
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+  await writeFile(path.join(drafts, fileName), 'plain text', 'utf8');
 
   assert.match(result.templatePath, /Templates\/Blog-Post-Template-pt\.md$/);
   assert.match(templateContents, /title: 'Titulo do post'/);
@@ -214,13 +227,31 @@ test('initializePostTemplate creates a PT template in the external vault', async
   assert.match(templateContents, /## Resumo/);
 });
 
-test('initializePostTemplate creates an EN template in the external vault', async () => {
-  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
-  const vault = path.join(sandbox, 'obsidian-vault');
-  await mkdir(vault, { recursive: true });
+test('publishPost rejects draft posts', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-draft-'));
+  const vault = path.join(sandbox, 'astro2code-blog');
+  const drafts = path.join(vault, 'Rascunhos');
+  const published = path.join(vault, 'Publicados');
+  const fileName = 'draft-post.md';
+  const fileContents = `---
+title: 'Rascunho'
+description: 'Nao deve publicar'
+author: 'Mateus Campos'
+pubDate: 'Mar 04 2026'
+draft: true
+lang: 'pt'
+category: 'workflow'
+tags:
+  - 'rascunho'
+canonicalSlug: 'rascunho'
+---
 
-  const result = await initializePostTemplate('en', { OBSIDIAN_VAULT_PATH: vault });
-  const templateContents = await readFile(result.templatePath, 'utf8');
+Conteudo de teste.
+`;
+
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+  await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
 
   assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
   assert.match(templateContents, /title: 'Post title'/);
