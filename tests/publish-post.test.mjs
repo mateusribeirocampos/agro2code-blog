@@ -6,6 +6,7 @@ import path from 'node:path';
 
 import {
   extractFrontmatter,
+  initializePostTemplate,
   loadEnvFile,
   publishPost,
   resolveVaultPaths,
@@ -44,6 +45,70 @@ test('validatePostFrontmatter requires the full contract', () => {
         'pt',
       ),
     /Missing required frontmatter field: author/,
+  );
+});
+
+test('validatePostFrontmatter requires portfolioSummary when portfolioFeatured is true', () => {
+  assert.throws(
+    () =>
+      validatePostFrontmatter(
+        {
+          title: "'Post'",
+          description: "'Desc'",
+          author: "'Mateus Campos'",
+          pubDate: "'Mar 04 2026'",
+          draft: 'false',
+          lang: "'pt'",
+          category: "'workflow'",
+          tags: '',
+          canonicalSlug: "'post-valido'",
+          portfolioFeatured: 'true',
+        },
+        'pt',
+      ),
+    /portfolioSummary is required when portfolioFeatured is true/,
+  );
+});
+
+test('validatePostFrontmatter enforces draft as boolean literal', () => {
+  assert.throws(
+    () =>
+      validatePostFrontmatter(
+        {
+          title: "'Post'",
+          description: "'Desc'",
+          author: "'Mateus Campos'",
+          pubDate: "'Mar 04 2026'",
+          draft: "'no'",
+          lang: "'pt'",
+          category: "'workflow'",
+          tags: '',
+          canonicalSlug: "'post-valido'",
+        },
+        'pt',
+      ),
+    /draft must be true or false/,
+  );
+});
+
+test('validatePostFrontmatter enforces parseable pubDate', () => {
+  assert.throws(
+    () =>
+      validatePostFrontmatter(
+        {
+          title: "'Post'",
+          description: "'Desc'",
+          author: "'Mateus Campos'",
+          pubDate: "'not-a-date'",
+          draft: 'false',
+          lang: "'pt'",
+          category: "'workflow'",
+          tags: '',
+          canonicalSlug: "'post-valido'",
+        },
+        'pt',
+      ),
+    /pubDate must be a valid date/,
   );
 });
 
@@ -90,16 +155,31 @@ Conteudo de teste.
   assert.equal(frontmatter.canonicalSlug, "'publicacao-de-teste'");
 });
 
-test('publishPost rejects files with unsupported extensions', async () => {
-  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-invalid-ext-'));
+test('publishPost rejects unsupported file extensions with author-facing guidance', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-blog-'));
   const vault = path.join(sandbox, 'astro2code-blog');
   const drafts = path.join(vault, 'Rascunhos');
   const published = path.join(vault, 'Publicados');
   const fileName = 'test-publish.txt';
+  const fileContents = `---
+title: 'Publicacao de teste'
+description: 'Valida o fluxo de importacao'
+author: 'Mateus Campos'
+pubDate: 'Mar 04 2026'
+draft: false
+lang: 'pt'
+category: 'workflow'
+tags:
+  - 'teste'
+canonicalSlug: 'publicacao-de-teste'
+---
+
+Conteudo de teste.
+`;
 
   await mkdir(drafts, { recursive: true });
   await mkdir(published, { recursive: true });
-  await writeFile(path.join(drafts, fileName), 'plain text', 'utf8');
+  await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
 
   await assert.rejects(
     () =>
@@ -107,8 +187,62 @@ test('publishPost rejects files with unsupported extensions', async () => {
         OBSIDIAN_VAULT_PATH: vault,
         A2C_CONTENT_ROOT: path.join(sandbox, 'content-root'),
       }),
-    /Only \.md and \.mdx files are supported/,
+    /Only \.md or \.mdx files are supported/,
   );
+});
+
+test('publishPost reports clear message when draft file is missing', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-blog-'));
+  const vault = path.join(sandbox, 'astro2code-blog');
+  const drafts = path.join(vault, 'Rascunhos');
+  const published = path.join(vault, 'Publicados');
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+
+  await assert.rejects(
+    () =>
+      publishPost('arquivo-inexistente.md', 'pt', {
+        OBSIDIAN_VAULT_PATH: vault,
+        A2C_CONTENT_ROOT: path.join(sandbox, 'content-root'),
+      }),
+    /Draft file not found in Rascunhos/,
+  );
+});
+
+test('initializePostTemplate creates a PT template in the external vault', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  await mkdir(vault, { recursive: true });
+
+  const result = await initializePostTemplate('pt', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
+
+  assert.match(result.templatePath, /Templates\/Blog-Post-Template-pt\.md$/);
+  assert.match(templateContents, /title: 'Titulo do post'/);
+  assert.match(templateContents, /lang: 'pt'/);
+  assert.match(templateContents, /updatedDate: ''/);
+  assert.match(templateContents, /series: ''/);
+  assert.match(templateContents, /canonicalSlug: 'titulo-do-post-em-kebab-case'/);
+  assert.match(templateContents, /portfolioFeatured: false/);
+  assert.match(templateContents, /## Resumo/);
+});
+
+test('initializePostTemplate creates an EN template in the external vault', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  await mkdir(vault, { recursive: true });
+
+  const result = await initializePostTemplate('en', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
+
+  assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
+  assert.match(templateContents, /title: 'Post title'/);
+  assert.match(templateContents, /lang: 'en'/);
+  assert.match(templateContents, /updatedDate: ''/);
+  assert.match(templateContents, /series: ''/);
+  assert.match(templateContents, /canonicalSlug: 'post-title-in-kebab-case'/);
+  assert.match(templateContents, /portfolioFeatured: false/);
+  assert.match(templateContents, /## Summary/);
 });
 
 test('publishPost rejects draft posts', async () => {
