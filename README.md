@@ -79,7 +79,7 @@ This creates `Templates/Blog-Post-Template-{lang}.md` inside the configured exte
 6. Validate locally:
    - `npm run dev`
    - or `npm run build`
-7. Commit from the feature branch and open a pull request into `develop`.
+7. Commit from the feature branch and open a pull request into `main`.
 
 ### What happens during publication
 
@@ -102,18 +102,16 @@ These commands are designed to keep the project aligned with a TDD-first workflo
 
 ## GitHub CI/CD and branch flow
 
-The repository is structured for a pragmatic GitFlow:
+The repository follows a mainline flow:
 
 - `feature/*` branches for isolated work
-- `develop` as the integration branch
-- `main` as the release branch
+- pull requests go directly into `main`
+- `main` is the release branch
 
 GitHub Actions:
 
-- `.github/workflows/ci.yml` validates pull requests into `develop` and `main`, plus direct pushes to `develop`
+- `.github/workflows/ci.yml` validates pull requests and protects release quality
 - `.github/workflows/deploy.yml` deploys GitHub Pages only from `main`
-
-To use this flow fully, the remote repository should keep a `develop` branch in addition to `main`.
 
 ## Project documentation
 

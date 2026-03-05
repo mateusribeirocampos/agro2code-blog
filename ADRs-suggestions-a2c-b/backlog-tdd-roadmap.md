@@ -5,7 +5,7 @@
 1. Keep build, tests, and `astro check` green.
 2. Remove remaining starter-template assumptions.
 3. Keep route behavior aligned with the URL contract.
-4. Maintain GitHub Actions CI for `develop` and deploy from `main`.
+4. Maintain GitHub Actions CI for pull requests into `main` and deploy from `main`.
 
 ## Phase 1: Editorial workflow
 
