@@ -13,7 +13,6 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggle light and dark theme';
-const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 
 ---
 
@@ -62,7 +61,7 @@ const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 				aria-label={themeButtonLabel}
 				title={themeButtonLabel}
 			>
-				{themeButtonText}
+				<span data-theme-icon>☀️</span>
 			</button>
 			<LanguagePicker translatedPaths={translatedPaths} />
 		</div>
@@ -71,10 +70,15 @@ const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 <script is:inline>
 	(() => {
 		const button = document.querySelector('[data-theme-toggle]');
+		const icon = button?.querySelector('[data-theme-icon]');
 		if (!button) return;
 
 		const syncAriaState = () => {
-			button.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
+			const isDarkMode = document.documentElement.dataset.theme === 'dark';
+			button.setAttribute('aria-pressed', String(isDarkMode));
+			if (icon) {
+				icon.textContent = isDarkMode ? '🌙' : '☀️';
+			}
 		};
 
 		button.addEventListener('click', () => {
@@ -114,7 +118,7 @@ const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 	}
 	nav a {
 		padding: 1em 0.5em;
-		color: var(--black);
+		color: rgb(var(--black));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
 	}
@@ -141,9 +145,14 @@ const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 		background: rgb(var(--surface-strong));
 		color: rgb(var(--gray-dark));
 		border-radius: 999px;
-		padding: 0.35rem 0.8rem;
-		font-size: 0.75rem;
+		padding: 0.3rem;
+		font-size: 1rem;
+		line-height: 1;
+		width: 2rem;
+		height: 2rem;
 		cursor: pointer;
+		display: grid;
+		place-items: center;
 	}
 	.theme-toggle:hover {
 		border-color: var(--accent);
