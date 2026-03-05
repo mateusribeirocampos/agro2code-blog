@@ -6,6 +6,7 @@ import path from 'node:path';
 
 import {
   extractFrontmatter,
+  initializePostTemplate,
   loadEnvFile,
   publishPost,
   resolveVaultPaths,
@@ -213,9 +214,8 @@ test('initializePostTemplate creates a PT template in the external vault', async
   const vault = path.join(sandbox, 'obsidian-vault');
   await mkdir(vault, { recursive: true });
 
-  await mkdir(drafts, { recursive: true });
-  await mkdir(published, { recursive: true });
-  await writeFile(path.join(drafts, fileName), 'plain text', 'utf8');
+  const result = await initializePostTemplate('pt', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
 
   assert.match(result.templatePath, /Templates\/Blog-Post-Template-pt\.md$/);
   assert.match(templateContents, /title: 'Titulo do post'/);
@@ -225,6 +225,24 @@ test('initializePostTemplate creates a PT template in the external vault', async
   assert.match(templateContents, /canonicalSlug: 'titulo-do-post-em-kebab-case'/);
   assert.match(templateContents, /portfolioFeatured: false/);
   assert.match(templateContents, /## Resumo/);
+});
+
+test('initializePostTemplate creates an EN template in the external vault', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  await mkdir(vault, { recursive: true });
+
+  const result = await initializePostTemplate('en', { OBSIDIAN_VAULT_PATH: vault });
+  const templateContents = await readFile(result.templatePath, 'utf8');
+
+  assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
+  assert.match(templateContents, /title: 'Post title'/);
+  assert.match(templateContents, /lang: 'en'/);
+  assert.match(templateContents, /updatedDate: ''/);
+  assert.match(templateContents, /series: ''/);
+  assert.match(templateContents, /canonicalSlug: 'post-title-in-kebab-case'/);
+  assert.match(templateContents, /portfolioFeatured: false/);
+  assert.match(templateContents, /## Summary/);
 });
 
 test('publishPost rejects draft posts', async () => {
@@ -253,12 +271,12 @@ Conteudo de teste.
   await mkdir(published, { recursive: true });
   await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
 
-  assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
-  assert.match(templateContents, /title: 'Post title'/);
-  assert.match(templateContents, /lang: 'en'/);
-  assert.match(templateContents, /updatedDate: ''/);
-  assert.match(templateContents, /series: ''/);
-  assert.match(templateContents, /canonicalSlug: 'post-title-in-kebab-case'/);
-  assert.match(templateContents, /portfolioFeatured: false/);
-  assert.match(templateContents, /## Summary/);
+  await assert.rejects(
+    () =>
+      publishPost(fileName, 'pt', {
+        OBSIDIAN_VAULT_PATH: vault,
+        A2C_CONTENT_ROOT: path.join(sandbox, 'content-root'),
+      }),
+    /Draft posts cannot be published/,
+  );
 });
