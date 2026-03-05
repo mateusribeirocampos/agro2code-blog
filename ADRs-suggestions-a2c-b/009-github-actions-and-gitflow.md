@@ -1,21 +1,20 @@
-# ADR 009: GitHub Actions CI/CD and Pragmatic GitFlow
+# ADR 009: GitHub Actions CI/CD and Mainline Branch Flow
 
 - Status: Accepted
-- Date: 2026-03-04
+- Date: 2026-03-05
 
 ## Context
 
-The project needs a predictable release path in GitHub, not only a deploy workflow. Validation and deployment should be separated so pull requests are gated before `main`.
+The project needs a predictable release path in GitHub with low operational overhead. Validation and deployment should stay separated while keeping the delivery flow simple and direct.
 
 ## Decision
 
-Use a pragmatic GitFlow model:
+Use a mainline model:
 
-- `feature/*` branches branch from `develop`
-- `develop` is the integration branch
+- `feature/*` branches for isolated work
+- pull requests go directly into `main`
 - `main` is the release branch
-- pull requests into `develop` and `main` run CI
-- pushes to `develop` also run CI
+- pull requests into `main` run CI
 - pushes to `main` deploy to GitHub Pages
 
 GitHub Actions split:
@@ -25,7 +24,6 @@ GitHub Actions split:
 
 ## Consequences
 
-- CI failures are caught before release promotion.
+- CI failures are caught before merge into the release branch.
 - Deployment stays tied to the stable branch only.
-- The repository should create and maintain a `develop` branch to use this flow fully.
-
+- The workflow removes branch promotion overhead (`develop` -> `main`) and shortens lead time to production.
