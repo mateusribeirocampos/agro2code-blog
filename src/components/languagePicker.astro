@@ -1,5 +1,10 @@
 ---
 import { languages } from '../i18n/ui';
+interface Props {
+  translatedPaths?: Partial<Record<'en' | 'pt', string>>;
+}
+
+const { translatedPaths } = Astro.props as Props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing slash
 const currentPath = Astro.url.pathname.replace(base, ''); // Remove base from current path
 const lang = currentPath.startsWith('/pt') ? 'pt' : 'en';
@@ -24,12 +29,20 @@ function translatePath(path: string, code: string) {
   return `${base}${translatedPath}`;
 }
 
+function buildHref(code: string) {
+  const translatedPath = translatedPaths?.[code as 'en' | 'pt'];
+  if (translatedPath) {
+    return `${base}${translatedPath}`;
+  }
+  return translatePath(currentPath, code);
+}
+
 ---
 <ul>
   {Object.entries(languages).map(([code, label])=>(
     <li>
       <a
-        href={translatePath(currentPath, code)}
+        href={buildHref(code)}
         aria-current={lang === code ? 'page' : undefined}
       >
         {label}
