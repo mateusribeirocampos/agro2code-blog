@@ -12,6 +12,8 @@ const { translatedPaths } = Astro.props as Props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggle light and dark theme';
+const themeButtonText = lang === 'pt' ? 'Tema' : 'Theme';
 
 ---
 
@@ -53,15 +55,47 @@ const translatePath = useTranslatedPath(lang);
 			</a>
 		</div>
 		<div class="language-selector text-sm">
+			<button
+				type="button"
+				class="theme-toggle"
+				data-theme-toggle
+				aria-label={themeButtonLabel}
+				title={themeButtonLabel}
+			>
+				{themeButtonText}
+			</button>
 			<LanguagePicker translatedPaths={translatedPaths} />
 		</div>
 	</nav>
 </header>
+<script is:inline>
+	(() => {
+		const button = document.querySelector('[data-theme-toggle]');
+		if (!button) return;
+
+		const syncAriaState = () => {
+			button.setAttribute('aria-pressed', String(document.documentElement.dataset.theme === 'dark'));
+		};
+
+		button.addEventListener('click', () => {
+			const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+			document.documentElement.dataset.theme = nextTheme;
+			try {
+				localStorage.setItem('a2c-theme', nextTheme);
+			} catch {
+				// Ignore storage failures in restricted browsers.
+			}
+			syncAriaState();
+		});
+
+		syncAriaState();
+	})();
+</script>
 <style>
 	header {
 		margin: 0;
 		padding: 0 1em;
-		background: white;
+		background: rgb(var(--surface));
 		box-shadow: 0 2px 8px rgba(var(--black), 5%);
 	}
 	h2 {
@@ -96,5 +130,23 @@ const translatePath = useTranslatedPath(lang);
 		.social-links {
 			display: none;
 		}
+	}
+	.language-selector {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+	.theme-toggle {
+		border: 1px solid rgb(var(--gray-light));
+		background: rgb(var(--surface-strong));
+		color: rgb(var(--gray-dark));
+		border-radius: 999px;
+		padding: 0.35rem 0.8rem;
+		font-size: 0.75rem;
+		cursor: pointer;
+	}
+	.theme-toggle:hover {
+		border-color: var(--accent);
+		color: var(--accent);
 	}
 </style>
