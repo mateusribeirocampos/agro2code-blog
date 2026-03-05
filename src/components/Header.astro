@@ -60,8 +60,28 @@ const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggl
 				data-theme-toggle
 				aria-label={themeButtonLabel}
 				title={themeButtonLabel}
+				data-theme-icon="sun"
 			>
-				<span data-theme-icon>☀️</span>
+				<svg data-theme-icon-sun aria-hidden="true" viewBox="0 0 24 24" width="16" height="16">
+					<circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+					<path
+						d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M5.1 18.9l1.6-1.6M17.3 6.7l1.6-1.6"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+					></path>
+				</svg>
+				<svg data-theme-icon-moon aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" style="display: none;">
+					<path
+						d="M15.6 3.8a8.7 8.7 0 1 0 4.6 15.8 9 9 0 1 1-4.6-15.8z"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="1.8"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					></path>
+				</svg>
 			</button>
 			<LanguagePicker translatedPaths={translatedPaths} />
 		</div>
@@ -70,14 +90,21 @@ const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggl
 <script is:inline>
 	(() => {
 		const button = document.querySelector('[data-theme-toggle]');
-		const icon = button?.querySelector('[data-theme-icon]');
+		const sunIcon = button?.querySelector('[data-theme-icon-sun]');
+		const moonIcon = button?.querySelector('[data-theme-icon-moon]');
 		if (!button) return;
 
 		const syncAriaState = () => {
 			const isDarkMode = document.documentElement.dataset.theme === 'dark';
 			button.setAttribute('aria-pressed', String(isDarkMode));
-			if (icon) {
-				icon.textContent = isDarkMode ? '🌙' : '☀️';
+			button.dataset.themeIcon = isDarkMode ? 'moon' : 'sun';
+
+			if (sunIcon instanceof SVGElement) {
+				sunIcon.style.display = isDarkMode ? 'none' : 'block';
+			}
+
+			if (moonIcon instanceof SVGElement) {
+				moonIcon.style.display = isDarkMode ? 'block' : 'none';
 			}
 		};
 
@@ -143,7 +170,7 @@ const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggl
 	.theme-toggle {
 		border: 1px solid rgb(var(--gray-light));
 		background: rgb(var(--surface-strong));
-		color: rgb(var(--gray-dark));
+		color: #111111;
 		border-radius: 999px;
 		padding: 0.3rem;
 		font-size: 1rem;
@@ -153,6 +180,9 @@ const themeButtonLabel = lang === 'pt' ? 'Alternar tema claro e escuro' : 'Toggl
 		cursor: pointer;
 		display: grid;
 		place-items: center;
+	}
+	:global(:root[data-theme='dark']) .theme-toggle {
+		color: #ffffff;
 	}
 	.theme-toggle:hover {
 		border-color: var(--accent);

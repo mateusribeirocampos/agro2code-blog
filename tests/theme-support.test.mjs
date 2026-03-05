@@ -16,9 +16,10 @@ test('Header renders a theme toggle control with persistence script', async () =
   assert.match(header, /data-theme-toggle/);
   assert.match(header, /localStorage\.setItem\('a2c-theme'/);
   assert.match(header, /document\.documentElement\.dataset\.theme/);
-  assert.match(header, /data-theme-icon/);
-  assert.match(header, /☀️/);
-  assert.match(header, /🌙/);
+  assert.match(header, /data-theme-icon-sun/);
+  assert.match(header, /data-theme-icon-moon/);
+  assert.match(header, /style=\"display: none;\"/);
+  assert.match(header, /button\.dataset\.themeIcon/);
 });
 
 test('Global styles define dark theme variables', async () => {
