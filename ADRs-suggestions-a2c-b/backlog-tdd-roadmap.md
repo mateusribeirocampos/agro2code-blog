@@ -22,3 +22,5 @@
 
 1. Improve article browsing and categorization.
 2. Add search, series pages, or curated indexes only after the base workflow stays stable.
+3. Implement user-selectable theme support (`light`/`dark`) with persistence and system-preference fallback.
+4. Add tests for theme behavior first (initialization, toggle, persistence, and no-regression in both themes) before implementation changes.
