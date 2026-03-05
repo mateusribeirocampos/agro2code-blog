@@ -4,7 +4,11 @@ import { SITE_TITLE } from '../consts';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
 import LanguagePicker from './languagePicker.astro';
 
-// TODO: Add support for other languages
+interface Props {
+	translatedPaths?: Partial<Record<'en' | 'pt', string>>;
+}
+
+const { translatedPaths } = Astro.props as Props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
@@ -49,7 +53,7 @@ const translatePath = useTranslatedPath(lang);
 			</a>
 		</div>
 		<div class="language-selector text-sm">
-			<LanguagePicker />
+			<LanguagePicker translatedPaths={translatedPaths} />
 		</div>
 	</nav>
 </header>

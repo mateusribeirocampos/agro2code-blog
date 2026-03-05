@@ -47,3 +47,34 @@ export function listStaticPathsForLanguage(posts, language) {
     }));
 }
 
+function getTranslationKey(post) {
+  if (!post?.id) return toRouteSlug(post);
+  const segments = post.id.split('/');
+  return segments.length > 1 ? segments.slice(1).join('/') : post.id;
+}
+
+export function buildLanguageSwitcherPathsByPostId(posts) {
+  const visiblePosts = posts.filter(isVisiblePost);
+  const slugsByTranslationKey = new Map();
+
+  for (const post of visiblePosts) {
+    const key = getTranslationKey(post);
+    const current = slugsByTranslationKey.get(key) || {};
+    current[post.data.lang] = toRouteSlug(post);
+    slugsByTranslationKey.set(key, current);
+  }
+
+  const pathsByPostId = new Map();
+
+  for (const post of visiblePosts) {
+    const key = getTranslationKey(post);
+    const translatedSlugs = slugsByTranslationKey.get(key) || {};
+
+    pathsByPostId.set(post.id, {
+      en: translatedSlugs.en ? `/blog/${translatedSlugs.en}/` : '/blog/',
+      pt: translatedSlugs.pt ? `/pt/blog/${translatedSlugs.pt}/` : '/pt/blog/',
+    });
+  }
+
+  return pathsByPostId;
+}

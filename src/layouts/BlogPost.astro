@@ -8,6 +8,7 @@ import { getLangFromUrl } from '../i18n/utils';
 interface Props {
 	title: string;
 	description: string;
+	translatedPaths?: Partial<Record<'en' | 'pt', string>>;
 	author?: string;
 	pubDate: Date;
 	draft?: boolean;
@@ -22,7 +23,7 @@ interface Props {
 	portfolioSummary?: string;
 }
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, translatedPaths } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 ---
 
@@ -71,7 +72,7 @@ const lang = getLangFromUrl(Astro.url);
 	</head>
 
 	<body>
-		<Header />
+		<Header translatedPaths={translatedPaths} />
 		<main>
 			<article>
 				<div class="hero-image">

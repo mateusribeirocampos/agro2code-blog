@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  buildLanguageSwitcherPathsByPostId,
   DEFAULT_EDITORIAL_LANGUAGE,
   listPostsForLanguage,
   listStaticPathsForLanguage,
@@ -10,6 +11,7 @@ import {
 
 const posts = [
   {
+    id: 'pt/first-post.md',
     data: {
       title: 'Visible PT',
       draft: false,
@@ -19,6 +21,7 @@ const posts = [
     },
   },
   {
+    id: 'pt/draft-post.md',
     data: {
       title: 'Draft PT',
       draft: true,
@@ -28,6 +31,7 @@ const posts = [
     },
   },
   {
+    id: 'en/first-post.md',
     data: {
       title: 'Visible EN',
       draft: false,
@@ -65,3 +69,38 @@ test('listStaticPathsForLanguage uses canonicalSlug in route params', () => {
   ]);
 });
 
+test('buildLanguageSwitcherPathsByPostId links translated posts with different slugs', () => {
+  const mapping = buildLanguageSwitcherPathsByPostId(posts);
+
+  assert.deepEqual(mapping.get('en/first-post.md'), {
+    en: '/blog/visible-en/',
+    pt: '/pt/blog/visible-pt/',
+  });
+
+  assert.deepEqual(mapping.get('pt/first-post.md'), {
+    en: '/blog/visible-en/',
+    pt: '/pt/blog/visible-pt/',
+  });
+});
+
+test('buildLanguageSwitcherPathsByPostId falls back to listing when translation is missing', () => {
+  const enOnlyPosts = [
+    {
+      id: 'en/only-en.md',
+      data: {
+        title: 'Only EN',
+        draft: false,
+        lang: 'en',
+        pubDate: new Date('2026-03-03'),
+        canonicalSlug: 'only-en',
+      },
+    },
+  ];
+
+  const mapping = buildLanguageSwitcherPathsByPostId(enOnlyPosts);
+
+  assert.deepEqual(mapping.get('en/only-en.md'), {
+    en: '/blog/only-en/',
+    pt: '/pt/blog/',
+  });
+});

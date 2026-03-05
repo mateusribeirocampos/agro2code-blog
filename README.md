@@ -2,6 +2,8 @@
 
 `agro2code-blog` is the editorial extension of the Agro2Code portfolio. The portfolio surfaces featured topics and directs readers here for the full article, discussion, or technical note.
 
+Production URL: https://mateusribeirocampos.github.io/agro2code-blog/
+
 ## Current architecture
 
 - Static site built with Astro

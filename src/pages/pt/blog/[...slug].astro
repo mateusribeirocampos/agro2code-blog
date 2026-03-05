@@ -1,16 +1,30 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../../layouts/BlogPost.astro';
-import { listStaticPathsForLanguage } from '../../../utils/blog';
+import { buildLanguageSwitcherPathsByPostId, listStaticPathsForLanguage } from '../../../utils/blog';
 
 export async function getStaticPaths() {
-	return listStaticPathsForLanguage(await getCollection('blog'), 'pt');
+	const posts = await getCollection('blog');
+	const translatedPathsByPostId = buildLanguageSwitcherPathsByPostId(posts);
+
+	return listStaticPathsForLanguage(posts, 'pt').map((path: { params: { slug: string }; props: CollectionEntry<'blog'> }) => ({
+		...path,
+		props: {
+			page: path.props,
+			translatedPaths: translatedPathsByPostId.get(path.props.id),
+		},
+	}));
 }
 
-const page = Astro.props as CollectionEntry<'blog'>;
+interface Props {
+	page: CollectionEntry<'blog'>;
+	translatedPaths?: Partial<Record<'en' | 'pt', string>>;
+}
+
+const { page, translatedPaths } = Astro.props as Props;
 const { Content } = await render(page);
 ---
 
-<BlogPost {...page.data}>
+<BlogPost {...page.data} translatedPaths={translatedPaths}>
 	<Content />
 </BlogPost>

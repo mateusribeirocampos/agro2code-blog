@@ -14,12 +14,12 @@ export const ui = {
     'nav.home': 'Home',
     'nav.about': 'About',
     'nav.blog': 'Blog',
-    'home.title': '🧑‍🚀 Hello, Astronaut!',
+    'home.title': 'Agro2Code Blog',
   },
   pt: {
     'nav.home': 'Início',
     'nav.about': 'Sobre',
     'nav.blog': 'Blog',
-    'home.title': '🧑‍🚀 Olá, Astronauta!',
+    'home.title': 'Blog Agro2Code',
   },
 } as const;
