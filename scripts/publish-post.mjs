@@ -42,6 +42,15 @@ export function normalizeFrontmatterValue(value) {
   return value.replace(/^['"]|['"]$/g, '').trim();
 }
 
+function parseBooleanLiteral(value) {
+  const normalized = normalizeFrontmatterValue(value).toLowerCase();
+  if (normalized !== 'true' && normalized !== 'false') {
+    throw new Error('draft must be true or false.');
+  }
+
+  return normalized === 'true';
+}
+
 export function validateLanguage(language) {
   if (!SUPPORTED_LANGUAGES.includes(language)) {
     throw new Error(`Unsupported language "${language}". Use one of: ${SUPPORTED_LANGUAGES.join(', ')}.`);
@@ -94,13 +103,15 @@ title: 'Titulo do post'
 description: 'Resumo objetivo do conteudo'
 author: 'Mateus Campos'
 pubDate: 'Mar 04 2026'
+updatedDate: ''
 draft: true
 lang: 'pt'
 category: 'categoria-principal'
 tags:
   - 'tag-1'
   - 'tag-2'
-canonicalSlug: 'titulo-do-post'
+series: ''
+canonicalSlug: 'titulo-do-post-em-kebab-case'
 portfolioFeatured: false
 portfolioSummary: 'Resumo curto para destaque no portfolio'
 heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
@@ -125,13 +136,15 @@ title: 'Post title'
 description: 'Short summary of the content'
 author: 'Mateus Campos'
 pubDate: 'Mar 04 2026'
+updatedDate: ''
 draft: true
 lang: 'en'
 category: 'main-category'
 tags:
   - 'tag-1'
   - 'tag-2'
-canonicalSlug: 'post-title'
+series: ''
+canonicalSlug: 'post-title-in-kebab-case'
 portfolioFeatured: false
 portfolioSummary: 'Short summary for portfolio highlights'
 heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
@@ -182,6 +195,20 @@ export function validatePostFrontmatter(frontmatter, selectedLanguage) {
     throw new Error(`Frontmatter lang "${fileLanguage}" does not match selected language "${selectedLanguage}".`);
   }
 
+  const pubDate = normalizeFrontmatterValue(frontmatter.pubDate);
+  if (Number.isNaN(Date.parse(pubDate))) {
+    throw new Error('pubDate must be a valid date.');
+  }
+
+  parseBooleanLiteral(frontmatter.draft);
+
+  const portfolioFeatured = frontmatter.portfolioFeatured ? parseBooleanLiteral(frontmatter.portfolioFeatured) : false;
+  const portfolioSummary = normalizeFrontmatterValue(frontmatter.portfolioSummary || '');
+
+  if (portfolioFeatured && !portfolioSummary) {
+    throw new Error('portfolioSummary is required when portfolioFeatured is true.');
+  }
+
   const slug = normalizeFrontmatterValue(frontmatter.canonicalSlug);
 
   if (!/^[a-z0-9-]+$/.test(slug)) {
@@ -219,6 +246,10 @@ export async function publishPost(postFile, language = 'pt', env = process.env) 
     throw new Error('Usage: ./scripts/publish-post.sh <arquivo.md|arquivo.mdx> [idioma]');
   }
 
+  if (!postFile.endsWith('.md') && !postFile.endsWith('.mdx')) {
+    throw new Error('Only .md or .mdx files are supported. Use a draft file inside Rascunhos/.');
+  }
+
   const selectedLanguage = validateLanguage(language);
   const vaultPaths = await resolveVaultPaths(env);
   await ensureVaultStructure(vaultPaths);
@@ -228,7 +259,15 @@ export async function publishPost(postFile, language = 'pt', env = process.env) 
   const destDir = path.join(contentRoot, selectedLanguage);
   const archiveFile = path.join(vaultPaths.archiveDir, postFile);
 
-  const rawContent = await readFile(sourceFile, 'utf8');
+  let rawContent;
+  try {
+    rawContent = await readFile(sourceFile, 'utf8');
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      throw new Error(`Draft file not found in Rascunhos: ${postFile}.`);
+    }
+    throw error;
+  }
   const frontmatter = extractFrontmatter(rawContent);
   const { slug } = validatePostFrontmatter(frontmatter, selectedLanguage);
 
@@ -267,7 +306,8 @@ async function runCli() {
     console.log(`Archived source at ${result.archiveFile}`);
     console.log(`Canonical URL segment: ${result.slug}`);
   } catch (error) {
-    console.error(error.message);
+    console.error(`Publish failed: ${error.message}`);
+    console.error('Tip: verify language, frontmatter contract, file extension, and draft location in Rascunhos/.');
     process.exitCode = 1;
   }
 }
