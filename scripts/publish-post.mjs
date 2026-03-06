@@ -335,23 +335,32 @@ export async function publishPost(postFile, language = 'pt', env = process.env) 
   };
 }
 
-async function runCli() {
-  const [postFile, language = 'pt'] = process.argv.slice(2);
+export async function runCli(args = process.argv.slice(2), env = process.env, io = console) {
+  const [commandOrPostFile, language = 'pt'] = args;
 
   try {
-    const runtimeEnv = await resolveRuntimeEnv();
-    const result = await publishPost(postFile, language, runtimeEnv);
+    const runtimeEnv = await resolveRuntimeEnv(env);
 
-    console.log(`Published ${result.destination}`);
-    console.log(`Archived source at ${result.archiveFile}`);
-    console.log(`Canonical URL segment: ${result.slug}`);
+    if (commandOrPostFile === '--init-template') {
+      const result = await initializePostTemplate(language, runtimeEnv);
+
+      io.log(`Initialized template at ${result.templatePath}`);
+      return 0;
+    }
+
+    const result = await publishPost(commandOrPostFile, language, runtimeEnv);
+
+    io.log(`Published ${result.destination}`);
+    io.log(`Archived source at ${result.archiveFile}`);
+    io.log(`Canonical URL segment: ${result.slug}`);
+    return 0;
   } catch (error) {
-    console.error(`Publish failed: ${error.message}`);
-    console.error('Tip: verify language, frontmatter contract, file extension, and draft location in Rascunhos/.');
-    process.exitCode = 1;
+    io.error(`Publish failed: ${error.message}`);
+    io.error('Tip: verify language, frontmatter contract, file extension, and draft location in Rascunhos/.');
+    return 1;
   }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  await runCli();
+  process.exitCode = await runCli();
 }
