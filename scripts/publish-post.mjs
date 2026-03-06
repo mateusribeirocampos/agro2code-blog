@@ -137,71 +137,92 @@ export async function ensureVaultStructure(paths) {
 
 export function buildTemplateContent(language) {
   const normalizedLanguage = validateLanguage(language);
+  const templateDate = new Date().toISOString().slice(0, 10);
 
   if (normalizedLanguage === 'pt') {
     return `---
-title: 'Titulo do post'
-description: 'Resumo objetivo do conteudo'
+title: 'Titulo provisorio do post'
+description: 'Resumo em 1 ou 2 frases sobre o que o leitor vai aprender.'
 author: 'Mateus Campos'
-pubDate: 'Mar 04 2026'
+pubDate: '${templateDate}'
 updatedDate: ''
 draft: true
 lang: 'pt'
-category: 'categoria-principal'
+category: 'agricultura-digital'
 tags:
-  - 'tag-1'
-  - 'tag-2'
+  - 'api'
+  - 'dados'
 series: ''
 canonicalSlug: 'titulo-do-post-em-kebab-case'
 portfolioFeatured: false
-portfolioSummary: 'Resumo curto para destaque no portfolio'
-heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
+portfolioSummary: ''
+heroImage: ''
 ---
 
-## Resumo
+Antes de publicar, revise title, description, category, tags e canonicalSlug.
 
-Descreva rapidamente o objetivo do post.
+Use portfolioFeatured: true apenas se este post tambem merecer destaque no portfolio.
 
-## Desenvolvimento
+Se portfolioFeatured for true, preencha portfolioSummary com 1 ou 2 frases curtas.
 
-Escreva o conteudo principal aqui.
+## Contexto
 
-## Conclusao
+Explique o contexto do tema e por que ele importa.
 
-Registre a sintese final e os proximos passos.
+## Problema ou oportunidade
+
+Descreva a dor, a pergunta ou a oportunidade que este post aborda.
+
+## Solucao ou analise
+
+Apresente a explicacao principal, os exemplos, os dados ou a analise tecnica.
+
+## Proximos passos
+
+Registre a sintese final, recomendacoes e proximos desdobramentos.
 `;
   }
 
   return `---
-title: 'Post title'
-description: 'Short summary of the content'
+title: 'Working post title'
+description: 'Summarize in 1 or 2 sentences what the reader will learn.'
 author: 'Mateus Campos'
-pubDate: 'Mar 04 2026'
+pubDate: '${templateDate}'
 updatedDate: ''
 draft: true
 lang: 'en'
-category: 'main-category'
+category: 'digital-agriculture'
 tags:
-  - 'tag-1'
-  - 'tag-2'
+  - 'api'
+  - 'integration'
 series: ''
 canonicalSlug: 'post-title-in-kebab-case'
 portfolioFeatured: false
-portfolioSummary: 'Short summary for portfolio highlights'
-heroImage: '/agro2code-blog/blog-placeholder-1.jpg'
+portfolioSummary: ''
+heroImage: ''
 ---
 
-## Summary
+Before publishing, review title, description, category, tags, and canonicalSlug.
 
-Describe the purpose of the post.
+Use portfolioFeatured: true only when this article should also be featured in the portfolio.
 
-## Development
+If portfolioFeatured is true, fill portfolioSummary with 1 or 2 short sentences.
 
-Write the main content here.
+## Context
 
-## Conclusion
+Explain the context of the topic and why it matters.
 
-Capture the main outcome and next steps.
+## Problem or opportunity
+
+Describe the pain point, open question, or opportunity this post addresses.
+
+## Solution or analysis
+
+Present the main explanation, examples, data, or technical analysis.
+
+## Next steps
+
+Capture the conclusion, recommendations, and possible follow-up work.
 `;
 }
 
