@@ -336,7 +336,7 @@ export async function publishPost(postFile, language = 'pt', env = process.env) 
 }
 
 async function runCli() {
-  const [commandOrPostFile, language = 'pt'] = process.argv.slice(2);
+  const [postFile, language = 'pt'] = process.argv.slice(2);
 
   try {
     const runtimeEnv = await resolveRuntimeEnv();

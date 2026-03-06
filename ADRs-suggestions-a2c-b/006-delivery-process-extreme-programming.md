@@ -22,4 +22,4 @@ The implementation method is pragmatic XP:
 ## Consequences
 
 - Changes should stay small enough to validate quickly.
-- CI becomes the main gate for confidence and release readiness before promoting from `develop` to `main`.
+- CI becomes the main gate for confidence and release readiness before merging `feature/*` work into `main`.

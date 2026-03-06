@@ -4,4 +4,4 @@ This directory concentrates the architectural decisions, delivery constraints, a
 
 Use these files as the source of truth before changing content workflow, routes, schema, or release gates.
 
-It also defines the GitHub CI/CD and GitFlow expectations used to move changes from `feature/*` to `develop` and then to `main`.
+It also defines the GitHub CI/CD expectations for the mainline delivery flow used to move changes from `feature/*` directly into `main`.
