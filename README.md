@@ -44,7 +44,7 @@ The repository assumes a local external Obsidian vault.
 1. Configure `.env` from `.env.example`.
 2. Set `OBSIDIAN_VAULT_PATH` to your local vault path, for example `/path/to/obsidian-vault`.
 3. Create `Rascunhos/` and `Publicados/` inside the vault.
-4. Optionally create the post templates in the external vault:
+4. Initialize the post templates in the external vault:
    - `./scripts/publish-post.sh --init-template pt`
    - `./scripts/publish-post.sh --init-template en`
 5. Open the generated template in `Templates/`, duplicate it, and save the new note in `Rascunhos/`.
@@ -54,12 +54,20 @@ The repository assumes a local external Obsidian vault.
 
 The script automatically reads `.env` when available, validates the frontmatter contract, blocks duplicate `canonicalSlug` values in the same language, rejects files that are not `.md` or `.mdx`, rejects posts still marked with `draft: true`, imports the file into `src/content/blog/{lang}`, and archives the source note into `Publicados/`.
 
+Important:
+
+- keep the real vault path only in your local `.env`
+- never commit machine-specific paths to tracked project files
+- the external vault is the authoring source, but the repository is the publication source for build and deploy
+
 To initialize an Obsidian-ready post template in the external vault:
 
 - `./scripts/publish-post.sh --init-template pt`
 - `./scripts/publish-post.sh --init-template en`
 
 This creates `Templates/Blog-Post-Template-{lang}.md` inside the configured external vault.
+
+Initialize the template before refining its contents or starting a new article. This confirms that the documented CLI command is working against the configured vault and avoids improving a template flow that is not yet wired end-to-end.
 
 ### Step-by-step example
 
@@ -90,6 +98,12 @@ This creates `Templates/Blog-Post-Template-{lang}.md` inside the configured exte
 - The file is copied into `src/content/blog/{lang}/`
 - The original note is moved to `Publicados/`
 - The post becomes part of the generated Astro site
+
+In practice, the flow is:
+
+- external Obsidian vault: write and review
+- `publish-post.sh`: promote content into the repository
+- `src/content/blog/{lang}/`: source used by Astro build and GitHub Pages deploy
 
 ## Quality gates
 

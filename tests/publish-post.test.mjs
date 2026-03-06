@@ -10,6 +10,7 @@ import {
   loadEnvFile,
   publishPost,
   resolveVaultPaths,
+  runCli,
   validateLanguage,
   validatePostFrontmatter,
 } from '../scripts/publish-post.mjs';
@@ -243,6 +244,73 @@ test('initializePostTemplate creates an EN template in the external vault', asyn
   assert.match(templateContents, /canonicalSlug: 'post-title-in-kebab-case'/);
   assert.match(templateContents, /portfolioFeatured: false/);
   assert.match(templateContents, /## Summary/);
+});
+
+test('runCli initializes a PT template from the --init-template command', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-template-cli-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  const logs = [];
+  const errors = [];
+
+  await mkdir(vault, { recursive: true });
+
+  const exitCode = await runCli(['--init-template', 'pt'], { OBSIDIAN_VAULT_PATH: vault }, {
+    log: (message) => logs.push(message),
+    error: (message) => errors.push(message),
+  });
+
+  const templatePath = path.join(vault, 'Templates', 'Blog-Post-Template-pt.md');
+  const templateContents = await readFile(templatePath, 'utf8');
+
+  assert.equal(exitCode, 0);
+  assert.equal(errors.length, 0);
+  assert.match(logs[0], /Initialized template at .*Blog-Post-Template-pt\.md/);
+  assert.match(templateContents, /title: 'Titulo do post'/);
+});
+
+test('runCli publishes a post from positional arguments', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-publish-cli-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  const drafts = path.join(vault, 'Rascunhos');
+  const published = path.join(vault, 'Publicados');
+  const contentRoot = path.join(sandbox, 'content-root');
+  const fileName = 'cli-post.md';
+  const logs = [];
+  const errors = [];
+  const fileContents = `---
+title: 'Publicacao por CLI'
+description: 'Valida argumentos posicionais do CLI'
+author: 'Mateus Campos'
+pubDate: 'Mar 06 2026'
+draft: false
+lang: 'pt'
+category: 'workflow'
+tags:
+  - 'cli'
+canonicalSlug: 'publicacao-por-cli'
+---
+
+Conteudo de teste.
+`;
+
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+  await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
+
+  const exitCode = await runCli(
+    [fileName, 'pt'],
+    { OBSIDIAN_VAULT_PATH: vault, A2C_CONTENT_ROOT: contentRoot },
+    {
+      log: (message) => logs.push(message),
+      error: (message) => errors.push(message),
+    },
+  );
+
+  assert.equal(exitCode, 0);
+  assert.equal(errors.length, 0);
+  assert.match(logs[0], /Published .*cli-post\.md/);
+  assert.match(logs[1], /Archived source at .*cli-post\.md/);
+  assert.match(logs[2], /Canonical URL segment: publicacao-por-cli/);
 });
 
 test('publishPost rejects draft posts', async () => {
