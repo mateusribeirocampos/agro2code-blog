@@ -61,7 +61,7 @@ test('validatePostFrontmatter requires portfolioSummary when portfolioFeatured i
           draft: 'false',
           lang: "'pt'",
           category: "'workflow'",
-          tags: '',
+          tags: "'api'",
           canonicalSlug: "'post-valido'",
           portfolioFeatured: 'true',
         },
@@ -83,7 +83,7 @@ test('validatePostFrontmatter enforces draft as boolean literal', () => {
           draft: "'no'",
           lang: "'pt'",
           category: "'workflow'",
-          tags: '',
+          tags: "'api'",
           canonicalSlug: "'post-valido'",
         },
         'pt',
@@ -104,12 +104,89 @@ test('validatePostFrontmatter enforces parseable pubDate', () => {
           draft: 'false',
           lang: "'pt'",
           category: "'workflow'",
-          tags: '',
+          tags: "'api'",
           canonicalSlug: "'post-valido'",
         },
         'pt',
       ),
     /pubDate must be a valid date/,
+  );
+});
+
+test('validatePostFrontmatter rejects empty required editorial fields', () => {
+  assert.throws(
+    () =>
+      validatePostFrontmatter(
+        {
+          title: "''",
+          description: "'Desc'",
+          author: "'Mateus Campos'",
+          pubDate: "'Mar 04 2026'",
+          draft: 'false',
+          lang: "'pt'",
+          category: "'workflow'",
+          tags: "'api'",
+          canonicalSlug: "'post-valido'",
+        },
+        'pt',
+      ),
+    /title must not be empty/,
+  );
+});
+
+test('validatePostFrontmatter rejects placeholder canonicalSlug values from the template', () => {
+  assert.throws(
+    () =>
+      validatePostFrontmatter(
+        {
+          title: "'Post valido'",
+          description: "'Desc valida'",
+          author: "'Mateus Campos'",
+          pubDate: "'Mar 04 2026'",
+          draft: 'false',
+          lang: "'pt'",
+          category: "'workflow'",
+          tags: "'api'",
+          canonicalSlug: "'titulo-do-post-em-kebab-case'",
+        },
+        'pt',
+      ),
+    /canonicalSlug must be replaced with a real slug before publishing/,
+  );
+});
+
+test('publishPost rejects posts without at least one tag item', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-tags-'));
+  const vault = path.join(sandbox, 'astro2code-blog');
+  const drafts = path.join(vault, 'Rascunhos');
+  const published = path.join(vault, 'Publicados');
+  const fileName = 'sem-tags.md';
+  const fileContents = `---
+title: 'Post sem tags'
+description: 'Valida que tags nao podem ficar vazias'
+author: 'Mateus Campos'
+pubDate: 'Mar 04 2026'
+draft: false
+lang: 'pt'
+category: 'workflow'
+tags:
+canonicalSlug: 'post-sem-tags'
+---
+
+Conteudo de teste.
+`;
+
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+  await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
+
+  await assert.rejects(
+    () =>
+      publishPost(fileName, 'pt', {
+        OBSIDIAN_VAULT_PATH: vault,
+        A2C_CONTENT_ROOT: path.join(sandbox, 'content-root'),
+      }),
+    /tags must include at least one item/,
   );
 });
 
@@ -336,6 +413,64 @@ Conteudo de teste.
   assert.match(logs[0], /Published .*cli-post\.md/);
   assert.match(logs[1], /Archived source at .*cli-post\.md/);
   assert.match(logs[2], /Canonical URL segment: publicacao-por-cli/);
+});
+
+test('runCli reports author guidance for editorial validation failures', async () => {
+  const sandbox = await mkdtemp(path.join(tmpdir(), 'a2c-cli-error-'));
+  const vault = path.join(sandbox, 'obsidian-vault');
+  const drafts = path.join(vault, 'Rascunhos');
+  const published = path.join(vault, 'Publicados');
+  const fileName = 'placeholder-post.md';
+  const logs = [];
+  const errors = [];
+  const fileContents = `---
+title: 'Titulo provisorio do post'
+description: 'Resumo em 1 ou 2 frases sobre o que o leitor vai aprender.'
+author: 'Mateus Campos'
+pubDate: '2026-03-06'
+draft: false
+lang: 'pt'
+category: 'agricultura-digital'
+tags:
+  - 'api'
+canonicalSlug: 'titulo-do-post-em-kebab-case'
+---
+
+Conteudo de teste.
+`;
+
+  await mkdir(drafts, { recursive: true });
+  await mkdir(published, { recursive: true });
+  await writeFile(path.join(drafts, fileName), fileContents, 'utf8');
+
+  const exitCode = await runCli(
+    [fileName, 'pt'],
+    { OBSIDIAN_VAULT_PATH: vault, A2C_CONTENT_ROOT: path.join(sandbox, 'content-root') },
+    {
+      log: (message) => logs.push(message),
+      error: (message) => errors.push(message),
+    },
+  );
+
+  assert.equal(exitCode, 1);
+  assert.equal(logs.length, 0);
+  assert.match(errors[0], /title must be replaced with a real editorial value before publishing/);
+  assert.match(errors[1], /replace template placeholders and fill all editorial fields before publishing/i);
+});
+
+test('runCli reports configuration guidance when OBSIDIAN_VAULT_PATH is missing', async () => {
+  const logs = [];
+  const errors = [];
+
+  const exitCode = await runCli(['post.md', 'pt'], { OBSIDIAN_VAULT_PATH: '' }, {
+    log: (message) => logs.push(message),
+    error: (message) => errors.push(message),
+  });
+
+  assert.equal(exitCode, 1);
+  assert.equal(logs.length, 0);
+  assert.match(errors[0], /OBSIDIAN_VAULT_PATH is required/);
+  assert.match(errors[1], /configure OBSIDIAN_VAULT_PATH in your local .env or shell environment/i);
 });
 
 test('publishPost rejects draft posts', async () => {
