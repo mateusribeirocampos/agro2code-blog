@@ -219,13 +219,25 @@ test('initializePostTemplate creates a PT template in the external vault', async
   const templateContents = await readFile(result.templatePath, 'utf8');
 
   assert.match(result.templatePath, /Templates\/Blog-Post-Template-pt\.md$/);
-  assert.match(templateContents, /title: 'Titulo do post'/);
+  assert.match(templateContents, /title: 'Titulo provisorio do post'/);
   assert.match(templateContents, /lang: 'pt'/);
+  assert.match(templateContents, /pubDate: '\d{4}-\d{2}-\d{2}'/);
   assert.match(templateContents, /updatedDate: ''/);
+  assert.match(templateContents, /category: 'agricultura-digital'/);
+  assert.match(templateContents, /- 'api'/);
+  assert.match(templateContents, /- 'dados'/);
   assert.match(templateContents, /series: ''/);
   assert.match(templateContents, /canonicalSlug: 'titulo-do-post-em-kebab-case'/);
   assert.match(templateContents, /portfolioFeatured: false/);
-  assert.match(templateContents, /## Resumo/);
+  assert.match(templateContents, /portfolioSummary: ''/);
+  assert.match(templateContents, /heroImage: ''/);
+  assert.match(templateContents, /Antes de publicar, revise title, description, category, tags e canonicalSlug\./);
+  assert.match(templateContents, /## Contexto/);
+  assert.match(templateContents, /## Problema ou oportunidade/);
+  assert.match(templateContents, /## Solucao ou analise/);
+  assert.match(templateContents, /## Proximos passos/);
+  assert.doesNotMatch(templateContents, /tag-1/);
+  assert.doesNotMatch(templateContents, /blog-placeholder-1/);
 });
 
 test('initializePostTemplate creates an EN template in the external vault', async () => {
@@ -237,13 +249,25 @@ test('initializePostTemplate creates an EN template in the external vault', asyn
   const templateContents = await readFile(result.templatePath, 'utf8');
 
   assert.match(result.templatePath, /Templates\/Blog-Post-Template-en\.md$/);
-  assert.match(templateContents, /title: 'Post title'/);
+  assert.match(templateContents, /title: 'Working post title'/);
   assert.match(templateContents, /lang: 'en'/);
+  assert.match(templateContents, /pubDate: '\d{4}-\d{2}-\d{2}'/);
   assert.match(templateContents, /updatedDate: ''/);
+  assert.match(templateContents, /category: 'digital-agriculture'/);
+  assert.match(templateContents, /- 'api'/);
+  assert.match(templateContents, /- 'integration'/);
   assert.match(templateContents, /series: ''/);
   assert.match(templateContents, /canonicalSlug: 'post-title-in-kebab-case'/);
   assert.match(templateContents, /portfolioFeatured: false/);
-  assert.match(templateContents, /## Summary/);
+  assert.match(templateContents, /portfolioSummary: ''/);
+  assert.match(templateContents, /heroImage: ''/);
+  assert.match(templateContents, /Before publishing, review title, description, category, tags, and canonicalSlug\./);
+  assert.match(templateContents, /## Context/);
+  assert.match(templateContents, /## Problem or opportunity/);
+  assert.match(templateContents, /## Solution or analysis/);
+  assert.match(templateContents, /## Next steps/);
+  assert.doesNotMatch(templateContents, /tag-1/);
+  assert.doesNotMatch(templateContents, /blog-placeholder-1/);
 });
 
 test('runCli initializes a PT template from the --init-template command', async () => {
@@ -265,7 +289,8 @@ test('runCli initializes a PT template from the --init-template command', async 
   assert.equal(exitCode, 0);
   assert.equal(errors.length, 0);
   assert.match(logs[0], /Initialized template at .*Blog-Post-Template-pt\.md/);
-  assert.match(templateContents, /title: 'Titulo do post'/);
+  assert.match(templateContents, /title: 'Titulo provisorio do post'/);
+  assert.match(templateContents, /## Contexto/);
 });
 
 test('runCli publishes a post from positional arguments', async () => {
