@@ -1,5 +1,3 @@
-// dictionaries of terms to translate the labels for UI elements around your site. This allows your visitors to experience your site fully in their language.
-
 export const languages = {
   en: 'English',
   pt: 'Português',
