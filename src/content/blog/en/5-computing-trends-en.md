@@ -5,7 +5,7 @@ author: Mateus Campos
 pubDate: 2026-03-06
 updatedDate: 2026-03-07
 draft: false
-lang: en
+lang: 'en'
 category: digital-agriculture
 tags:
   - digital-agriculture
