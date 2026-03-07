@@ -5,11 +5,9 @@ import Footer from '../../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../../components/FormattedDate.astro';
-import { useTranslatedPath } from '../../../i18n/utils';
 import { listPostsForLanguage } from '../../../utils/blog';
 
 const lang = 'pt';
-const translatePath = useTranslatedPath('pt');
 const posts = listPostsForLanguage(await getCollection('blog'), lang);
 ---
 
@@ -95,7 +93,7 @@ const posts = listPostsForLanguage(await getCollection('blog'), lang);
           {
             posts.map((post) => (
               <li>
-                <a href={translatePath(`/blog/${post.slug}/`)}>
+                <a href={post.publicUrl}>
                   <img width={720} height={360} src={post.data.heroImage} alt="" />
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
