@@ -1,184 +1,177 @@
-# 📝 Scripts de Publicação
+# Scripts de Publicacao
 
-Scripts para automatizar o workflow Obsidian → Astro Blog.
+Este diretorio concentra o fluxo oficial de publicacao editorial do `agro2code-blog`.
 
----
+Hoje o projeto assume um vault externo do Obsidian como origem de escrita e o repositorio Astro como destino de publicacao.
 
-## 🚀 publish-post.sh
+## Script principal
 
-Script para publicar posts do Obsidian para o blog Astro.
-
-### Uso
+O ponto de entrada do fluxo e:
 
 ```bash
-./scripts/publish-post.sh <arquivo.md> [idioma]
+./scripts/publish-post.sh
 ```
 
-### Exemplos
+Esse shell script apenas encaminha os argumentos para `publish-post.mjs`.
+
+## Pre-requisito
+
+O script depende da variavel `OBSIDIAN_VAULT_PATH`.
+
+Ela pode vir:
+
+- do ambiente do shell
+- ou do arquivo `.env` local na raiz do repositorio
+
+Exemplo:
+
+```env
+OBSIDIAN_VAULT_PATH=/home/mrc/dev/obsidianVaults/astro2code-blog
+```
+
+Sem esse valor, o script nao sabe onde encontrar:
+
+- `Templates/`
+- `Rascunhos/`
+- `Publicados/`
+
+## Estrutura esperada no vault
+
+Dentro do vault configurado, o fluxo usa estas pastas:
+
+```text
+<vault>/
+  Templates/
+  Rascunhos/
+  Publicados/
+```
+
+Se `Rascunhos/` e `Publicados/` nao existirem, o script cria essas pastas.
+
+## Inicializar templates
+
+Antes de escrever um novo artigo, gere os templates oficiais:
 
 ```bash
-# Publicar post em português (default)
-./scripts/publish-post.sh meu-novo-post.md
-
-# Publicar post em português (explícito)
-./scripts/publish-post.sh meu-novo-post.md pt
-
-# Publicar post em inglês
-./scripts/publish-post.sh my-new-post.md en
+./scripts/publish-post.sh --init-template pt
+./scripts/publish-post.sh --init-template en
 ```
 
----
+Isso cria ou atualiza:
 
-## ⚙️ O que o Script Faz
+- `Templates/Blog-Post-Template-pt.md`
+- `Templates/Blog-Post-Template-en.md`
 
-1. ✅ Verifica se o arquivo existe em `obsidian-vault/Rascunhos/`
-2. ⚠️ Avisa se o post está marcado como rascunho (`draft: true`)
-3. 📋 Copia o post para `src/content/blog/[idioma]/`
-4. 📦 Arquiva o original em `obsidian-vault/Publicados/`
-5. 🖼️ Lista imagens encontradas no post
-6. 📌 Mostra próximos passos (testar, commit, deploy)
+O fluxo correto e:
 
----
+1. gerar o template oficial
+2. duplicar o template
+3. salvar a copia em `Rascunhos/`
+4. editar frontmatter e conteudo
+5. manter `draft: true` enquanto o texto estiver em revisao
+6. mudar para `draft: false` apenas quando estiver pronto
 
-## 📁 Estrutura Esperada
+## Publicar um rascunho
 
-```tree
-project-astro-blog/
-├── obsidian-vault/
-│   ├── Rascunhos/          ← Posts em desenvolvimento
-│   └── Publicados/         ← Posts já publicados (arquivo)
-│
-├── src/
-│   └── content/
-│       └── blog/
-│           ├── pt/         ← Posts em português (destino)
-│           └── en/         ← Posts em inglês (destino)
-│
-└── scripts/
-    └── publish-post.sh     ← Este script
-```
-
----
-
-## 🔧 Setup Inicial
-
-### 1. Criar Estrutura de Pastas
+Para publicar um arquivo em portugues:
 
 ```bash
-mkdir -p obsidian-vault/Rascunhos
-mkdir -p obsidian-vault/Publicados
-mkdir -p obsidian-vault/Templates
-mkdir -p obsidian-vault/Assets
+./scripts/publish-post.sh meu-post.md pt
 ```
 
-### 2. Tornar Script Executável (já feito)
+Para publicar um arquivo em ingles:
 
 ```bash
-chmod +x scripts/publish-post.sh
+./scripts/publish-post.sh my-post.md en
 ```
 
-### 3. Criar Template de Post
+Observacoes importantes:
 
-Arquivo: `obsidian-vault/Templates/Blog-Post-Template.md`
+- use o nome completo com extensao `.md` ou `.mdx`
+- o arquivo precisa existir em `Rascunhos/`
+- o `lang` do frontmatter precisa bater com o idioma do comando
 
-```markdown
----
-title: 'Título do Post'
-description: 'Descrição curta (140 caracteres)'
-author: 'Campos'
-pubDate: '2025-12-07'
-heroImage: '/blog-images/post-image.jpg'
-draft: true
----
+## O que o script valida
 
-## Introdução
+Antes de copiar qualquer arquivo para `src/content/blog/{lang}/`, o script valida:
 
-Conteúdo do post...
-```
+- existencia do vault configurado
+- existencia do arquivo em `Rascunhos/`
+- extensao `.md` ou `.mdx`
+- frontmatter YAML
+- campos obrigatorios
+- campos editoriais nao vazios
+- placeholders do template que ainda nao foram trocados
+- `draft: false`
+- `lang` coerente com o comando
+- `pubDate` valido
+- `updatedDate` valido quando estiver preenchido
+- pelo menos uma tag real em `tags`
+- `canonicalSlug` em `kebab-case`
+- duplicidade de `canonicalSlug` no idioma de destino
+- `portfolioSummary` quando `portfolioFeatured: true`
 
----
+## O que acontece ao publicar
 
-## 📝 Workflow Completo
+Quando a validacao passa:
 
-### 1. Escrever no Obsidian
+1. o arquivo e lido a partir de `Rascunhos/`
+2. ele e copiado para `src/content/blog/{lang}/`
+3. o original e movido para `Publicados/`
 
-```bash
-# Criar novo post em Rascunhos/
-obsidian-vault/Rascunhos/meu-novo-post.md
-```
+Depois disso, o post ja passa a fazer parte do site.
 
-### 2. Publicar com Script
+## Validacao local apos publicar
 
-```bash
-./scripts/publish-post.sh meu-novo-post.md pt
-```
-
-### 3. Testar Localmente
+Depois da publicacao, valide o site no repositorio:
 
 ```bash
 npm run dev
-# Acesse: http://localhost:4321/blog
 ```
 
-### 4. Commit e Deploy
+ou:
 
 ```bash
-git add src/content/blog/pt/meu-novo-post.md
-git commit -m "feat: add post meu-novo-post"
-git push
+npm run build
 ```
 
----
+## Erros comuns
 
-## 🎨 Tratamento de Imagens
+### Arquivo nao encontrado
 
-O script **não copia imagens automaticamente**. Você precisa:
+Revise:
 
-1. Mover imagens manualmente de `obsidian-vault/Assets/` para `public/blog-images/`
-2. Ou configurar CDN e fazer upload
+- se o arquivo esta mesmo em `Rascunhos/`
+- se voce usou o nome completo com extensao
 
-### Exemplo Manual
+### Idioma divergente
 
-```bash
-# Copiar imagens
-cp obsidian-vault/Assets/minha-imagem.jpg public/blog-images/
+Revise:
 
-# Atualizar referência no post
-# De: ![alt](../Assets/minha-imagem.jpg)
-# Para: ![alt](/blog-images/minha-imagem.jpg)
-```
+- o argumento do comando (`pt` ou `en`)
+- o campo `lang` no frontmatter
 
----
+### Post ainda em rascunho
 
-## ⚠️ Troubleshooting
+Revise:
 
-### "Arquivo não encontrado"
+- se o frontmatter ainda esta com `draft: true`
 
-- ✅ Certifique-se que o arquivo está em `obsidian-vault/Rascunhos/`
-- ✅ Use o nome completo com extensão: `post.md`
+### Campo editorial invalido
 
-### "Post marcado como rascunho"
+Revise:
 
-- ✅ Mude `draft: true` para `draft: false` no frontmatter
-- ✅ Ou confirme que quer publicar mesmo assim
+- `title`
+- `description`
+- `category`
+- `tags`
+- `canonicalSlug`
 
-### Script não executa
+### updatedDate invalido
 
-- ✅ Rode: `chmod +x scripts/publish-post.sh`
-- ✅ Execute do diretório raiz do projeto
+Revise:
 
----
+- se o campo realmente precisa existir
+- se existir, use uma data valida
 
-## 🚀 Futuras Melhorias
-
-- [ ] Copiar imagens automaticamente
-- [ ] Converter links `[[wiki]]` para `[markdown]()`
-- [ ] Validar frontmatter antes de publicar
-- [ ] Upload automático para CDN
-- [ ] Gerar commit message automaticamente
-- [ ] Notificar quando deploy estiver pronto
-
----
-
-**Criado em:** 2025-12-07
-**Versão:** 1.0
+Se o post ainda nao teve atualizacao, prefira remover `updatedDate` em vez de usar string vazia.

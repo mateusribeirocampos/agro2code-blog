@@ -299,7 +299,7 @@ test('initializePostTemplate creates a PT template in the external vault', async
   assert.match(templateContents, /title: 'Titulo provisorio do post'/);
   assert.match(templateContents, /lang: 'pt'/);
   assert.match(templateContents, /pubDate: '\d{4}-\d{2}-\d{2}'/);
-  assert.match(templateContents, /updatedDate: ''/);
+  assert.doesNotMatch(templateContents, /updatedDate:/);
   assert.match(templateContents, /category: 'agricultura-digital'/);
   assert.match(templateContents, /- 'api'/);
   assert.match(templateContents, /- 'dados'/);
@@ -313,6 +313,7 @@ test('initializePostTemplate creates a PT template in the external vault', async
   assert.match(templateContents, /## Problema ou oportunidade/);
   assert.match(templateContents, /## Solucao ou analise/);
   assert.match(templateContents, /## Proximos passos/);
+  assert.match(templateContents, /## Referencias/);
   assert.doesNotMatch(templateContents, /tag-1/);
   assert.doesNotMatch(templateContents, /blog-placeholder-1/);
 });
@@ -329,7 +330,7 @@ test('initializePostTemplate creates an EN template in the external vault', asyn
   assert.match(templateContents, /title: 'Working post title'/);
   assert.match(templateContents, /lang: 'en'/);
   assert.match(templateContents, /pubDate: '\d{4}-\d{2}-\d{2}'/);
-  assert.match(templateContents, /updatedDate: ''/);
+  assert.doesNotMatch(templateContents, /updatedDate:/);
   assert.match(templateContents, /category: 'digital-agriculture'/);
   assert.match(templateContents, /- 'api'/);
   assert.match(templateContents, /- 'integration'/);
@@ -343,6 +344,7 @@ test('initializePostTemplate creates an EN template in the external vault', asyn
   assert.match(templateContents, /## Problem or opportunity/);
   assert.match(templateContents, /## Solution or analysis/);
   assert.match(templateContents, /## Next steps/);
+  assert.match(templateContents, /## References/);
   assert.doesNotMatch(templateContents, /tag-1/);
   assert.doesNotMatch(templateContents, /blog-placeholder-1/);
 });
