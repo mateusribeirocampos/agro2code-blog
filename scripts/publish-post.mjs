@@ -287,6 +287,10 @@ Apresente a explicacao principal, os exemplos, os dados ou a analise tecnica.
 ## Proximos passos
 
 Registre a sintese final, recomendacoes e proximos desdobramentos.
+
+## Referencias
+
+Liste livros, artigos, documentacao, relatorios ou links que sustentam o texto.
 `;
   }
 
@@ -330,6 +334,10 @@ Present the main explanation, examples, data, or technical analysis.
 ## Next steps
 
 Capture the conclusion, recommendations, and possible follow-up work.
+
+## References
+
+List the books, papers, documentation, reports, or links that support the article.
 `;
 }
 
