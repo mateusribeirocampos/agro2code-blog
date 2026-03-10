@@ -14,6 +14,7 @@ Use a mainline model:
 - `feature/*` branches for isolated work
 - pull requests go directly into `main`
 - `main` is the release branch
+- `develop` is not part of the active delivery flow for now
 - pull requests into `main` run CI
 - pushes to `main` deploy to GitHub Pages
 
@@ -26,4 +27,5 @@ GitHub Actions split:
 
 - CI failures are caught before merge into the release branch.
 - Deployment stays tied to the stable branch only.
-- The workflow removes branch promotion overhead (`develop` -> `main`) and shortens lead time to production.
+- The workflow removes branch promotion overhead and shortens lead time to production.
+- Any documentation or automation that still references `develop` must be treated as outdated until intentionally reintroduced.
