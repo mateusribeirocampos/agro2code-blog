@@ -97,7 +97,7 @@ const posts = listPostsForLanguage(await getCollection('blog'), lang);
                   <img width={720} height={360} src={post.data.heroImage} alt="" />
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
-                    <FormattedDate date={post.data.pubDate} />
+                    <FormattedDate date={post.data.pubDate} lang={lang} />
                   </p>
                 </a>
               </li>

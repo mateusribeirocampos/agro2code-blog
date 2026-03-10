@@ -16,7 +16,8 @@
 ## Phase 2: Portfolio coordination
 
 1. Standardize how the portfolio stores article references.
-2. Optionally add machine-readable metadata export.
+2. Keep the machine-readable metadata export stable and evolve the portfolio integration behind tests and fallback.
+3. Reevaluate converting integration helpers to `.ts` only after the frontend test setup migrates to a TypeScript-friendly stack such as Vitest or Jest.
 
 ## Phase 3: UX evolution
 
