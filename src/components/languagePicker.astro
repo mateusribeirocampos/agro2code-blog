@@ -1,5 +1,6 @@
 ---
 import { languages } from '../i18n/ui';
+import { buildLanguagePickerHref, translatePathForLanguage } from '../utils/language-picker.js';
 interface Props {
   translatedPaths?: Partial<Record<'en' | 'pt', string>>;
 }
@@ -9,32 +10,15 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, ''); // Remove trailing sla
 const currentPath = Astro.url.pathname.replace(base, ''); // Remove base from current path
 const lang = currentPath.startsWith('/pt') ? 'pt' : 'en';
 
-function translatePath(path: string, code: string) {
-  let translatedPath: string;
-  if (code === 'pt') {
-    // Se quisermos ir para o PT:
-    // — Se já começa com '/pt', retornamos igual;
-    // — Caso contrário, adicionamos '/pt' antes do path, sem duplicar barras.
-    translatedPath = path.startsWith('/pt')
-    ? path
-    : '/pt' + (path === '/' ? '' : path);
-  } else {
-    // Se quisermos ir para o EN:
-    // — Se começa com '/pt', removemos esse prefixo;
-    // — Caso contrário, mantemos o path original.
-    translatedPath = path.startsWith('/pt')
-    ? path.replace(/^\/pt/, '') || '/'
-    : path;
-  }
-  return `${base}${translatedPath}`;
-}
-
 function buildHref(code: string) {
   const translatedPath = translatedPaths?.[code as 'en' | 'pt'];
-  if (translatedPath) {
-    return `${base}${translatedPath}`;
-  }
-  return translatePath(currentPath, code);
+  return buildLanguagePickerHref({
+    base,
+    currentPath,
+    code,
+    translatedPath,
+    translatePath: translatePathForLanguage,
+  });
 }
 
 ---
