@@ -4,12 +4,27 @@ import { NAME_AUTHOR } from '../consts';
 import { getLangFromUrl } from '../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 const today = new Date();
+const portfolioUrl =
+	lang === 'pt'
+		? 'https://portfolio-mateusribeirocampos.vercel.app/pt-BR'
+		: 'https://portfolio-mateusribeirocampos.vercel.app/';
+const portfolioLabel = lang === 'pt' ? 'Portfólio' : 'Portfolio';
 
 ---
 
 <footer>
 	&copy; {today.getFullYear()} {NAME_AUTHOR}. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}
+	<p class="portfolio-link">
+		<a href={portfolioUrl}>{lang === 'pt' ? 'Ver portfólio completo' : 'See full portfolio'} &rarr;</a>
+	</p>
 	<div class="social-links">
+		<a href={portfolioUrl}>
+			<span class="sr-only">{portfolioLabel}</span>
+			<svg viewBox="0 0 24 24" aria-hidden="true" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8">
+				<circle cx="12" cy="12" r="9.2"></circle>
+				<path d="M2.8 12h18.4M12 2.8c2.4 2.6 3.7 6 3.7 9.2s-1.3 6.6-3.7 9.2c-2.4-2.6-3.7-6-3.7-9.2s1.3-6.6 3.7-9.2z"></path>
+			</svg>
+		</a>
 		<a href="https://www.linkedin.com/in/mateus-ribeiro-de-campos-6a135331/" target="_blank">
 			<span class="sr-only">Follow me on LinkedIn</span>
 			<svg
@@ -51,6 +66,17 @@ const today = new Date();
 		background-repeat: no-repeat;
 		color: rgb(var(--gray));
 		text-align: center;
+	}
+	.portfolio-link {
+		margin: 0.5em 0 0;
+		font-size: 0.9em;
+	}
+	.portfolio-link a {
+		color: rgb(var(--gray));
+		text-decoration: underline;
+	}
+	.portfolio-link a:hover {
+		color: rgb(var(--gray-dark));
 	}
 	.social-links {
 		display: flex;
